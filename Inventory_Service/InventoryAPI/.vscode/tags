@@ -1,0 +1,172 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+0001_initial.py	../migrations/0001_initial.py	1;"	kind:file	line:1
+0002_auto_20171109_1426.py	../migrations/0002_auto_20171109_1426.py	1;"	kind:file	line:1
+0003_auto_20171109_1431.py	../migrations/0003_auto_20171109_1431.py	1;"	kind:file	line:1
+0004_auto_20171109_1641.py	../migrations/0004_auto_20171109_1641.py	1;"	kind:file	line:1
+0005_auto_20171111_0959.py	../migrations/0005_auto_20171111_0959.py	1;"	kind:file	line:1
+0006_network_state.py	../migrations/0006_network_state.py	1;"	kind:file	line:1
+0007_auto_20171111_1042.py	../migrations/0007_auto_20171111_1042.py	1;"	kind:file	line:1
+AppConfig	../apps.py	/^from django.apps import AppConfig$/;"	kind:namespace	line:1
+HttpResponse	../views.py	/^from django.http import HttpResponse$/;"	kind:namespace	line:3
+InventoryapiConfig	../apps.py	/^class InventoryapiConfig(AppConfig):$/;"	kind:class	line:4
+Meta	../models.py	/^    class Meta:$/;"	kind:class	line:27
+Meta	../models.py	/^    class Meta:$/;"	kind:class	line:5
+Migration	../migrations/0001_initial.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:10
+Migration	../migrations/0002_auto_20171109_1426.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:8
+Migration	../migrations/0003_auto_20171109_1431.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:9
+Migration	../migrations/0004_auto_20171109_1641.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:9
+Migration	../migrations/0005_auto_20171111_0959.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:8
+Migration	../migrations/0006_network_state.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:8
+Migration	../migrations/0007_auto_20171111_1042.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:8
+Network	../admin.py	/^from .models import VM, Network$/;"	kind:namespace	line:2
+Network	../models.py	/^class Network(models.Model):$/;"	kind:class	line:4
+Network	../views.py	/^from .models import Network, VM$/;"	kind:namespace	line:6
+TestCase	../tests.py	/^from django.test import TestCase$/;"	kind:namespace	line:1
+VM	../admin.py	/^from .models import VM, Network$/;"	kind:namespace	line:2
+VM	../models.py	/^class VM(models.Model):$/;"	kind:class	line:26
+VM	../views.py	/^from .models import Network, VM$/;"	kind:namespace	line:6
+__init__.py	../__init__.py	1;"	kind:file	line:1
+__init__.py	../migrations/__init__.py	1;"	kind:file	line:1
+__str__	../models.py	/^    def __str__(self):$/;"	kind:member	line:14
+__str__	../models.py	/^    def __str__(self):$/;"	kind:member	line:42
+admin	../admin.py	/^from django.contrib import admin$/;"	kind:namespace	line:1
+admin	../urls.py	/^from django.contrib import admin$/;"	kind:namespace	line:3
+admin.py	../admin.py	1;"	kind:file	line:1
+apps.py	../apps.py	1;"	kind:file	line:1
+as_dict	../models.py	/^    def as_dict(self):$/;"	kind:member	line:17
+as_dict	../models.py	/^    def as_dict(self):$/;"	kind:member	line:45
+csrf_exempt	../views.py	/^from django.views.decorators.csrf import csrf_exempt$/;"	kind:namespace	line:4
+db	../migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:7
+db	../migrations/0003_auto_20171109_1431.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+db	../migrations/0004_auto_20171109_1641.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+deletion	../migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:7
+deletion	../migrations/0003_auto_20171109_1431.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+deletion	../migrations/0004_auto_20171109_1641.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+dependencies	../migrations/0001_initial.py	/^    dependencies = [$/;"	kind:variable	line:14
+dependencies	../migrations/0002_auto_20171109_1426.py	/^    dependencies = [$/;"	kind:variable	line:10
+dependencies	../migrations/0003_auto_20171109_1431.py	/^    dependencies = [$/;"	kind:variable	line:11
+dependencies	../migrations/0004_auto_20171109_1641.py	/^    dependencies = [$/;"	kind:variable	line:11
+dependencies	../migrations/0005_auto_20171111_0959.py	/^    dependencies = [$/;"	kind:variable	line:10
+dependencies	../migrations/0006_network_state.py	/^    dependencies = [$/;"	kind:variable	line:10
+dependencies	../migrations/0007_auto_20171111_1042.py	/^    dependencies = [$/;"	kind:variable	line:10
+description	../models.py	/^    description = models.CharField(max_length=300, blank=True)$/;"	kind:variable	line:11
+description	../models.py	/^    description = models.CharField(max_length=300, blank=True)$/;"	kind:variable	line:35
+django	../migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:7
+django	../migrations/0003_auto_20171109_1431.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+django	../migrations/0004_auto_20171109_1641.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+field	../migrations/0002_auto_20171109_1426.py	/^            field=models.CharField(max_length=200, primary_key=True, serialize=False),$/;"	kind:variable	line:26
+field	../migrations/0002_auto_20171109_1426.py	/^            field=models.CharField(max_length=200, primary_key=True, serialize=False),$/;"	kind:variable	line:36
+field	../migrations/0002_auto_20171109_1426.py	/^            field=models.CharField(max_length=400),$/;"	kind:variable	line:31
+field	../migrations/0002_auto_20171109_1426.py	/^            field=models.CharField(max_length=400),$/;"	kind:variable	line:41
+field	../migrations/0003_auto_20171109_1431.py	/^            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='network_1', to='InventoryAPI.Network'),$/;"	kind:variable	line:19
+field	../migrations/0003_auto_20171109_1431.py	/^            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='network_2', to='InventoryAPI.Network'),$/;"	kind:variable	line:24
+field	../migrations/0004_auto_20171109_1641.py	/^            field=models.CharField(blank=True, max_length=300),$/;"	kind:variable	line:19
+field	../migrations/0004_auto_20171109_1641.py	/^            field=models.CharField(blank=True, max_length=300),$/;"	kind:variable	line:24
+field	../migrations/0004_auto_20171109_1641.py	/^            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='network_1', to='InventoryAPI.Network'),$/;"	kind:variable	line:29
+field	../migrations/0004_auto_20171109_1641.py	/^            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='network_2', to='InventoryAPI.Network'),$/;"	kind:variable	line:34
+field	../migrations/0006_network_state.py	/^            field=models.CharField(choices=[('U', 'Up'), ('C', 'Creating')], default='U', max_length=20),$/;"	kind:variable	line:18
+field	../migrations/0007_auto_20171111_1042.py	/^            field=models.CharField(choices=[('U', 'Up'), ('C', 'Creating')], default='C', max_length=20),$/;"	kind:variable	line:18
+fields	../migrations/0001_initial.py	/^            fields=[$/;"	kind:variable	line:21
+fields	../migrations/0001_initial.py	/^            fields=[$/;"	kind:variable	line:30
+flavors	../models.py	/^    flavors = (('1', 'centos'), ('2', 'fedora'))$/;"	kind:variable	line:32
+initial	../migrations/0001_initial.py	/^    initial = True$/;"	kind:variable	line:12
+ip	../models.py	/^    ip = models.GenericIPAddressField()$/;"	kind:variable	line:36
+json	../views.py	/^import json$/;"	kind:namespace	line:5
+migrations	../migrations/0001_initial.py	/^from django.db import migrations, models$/;"	kind:namespace	line:6
+migrations	../migrations/0002_auto_20171109_1426.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+migrations	../migrations/0003_auto_20171109_1431.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+migrations	../migrations/0004_auto_20171109_1641.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+migrations	../migrations/0005_auto_20171111_0959.py	/^from django.db import migrations$/;"	kind:namespace	line:5
+migrations	../migrations/0006_network_state.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+migrations	../migrations/0007_auto_20171111_1042.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='network',$/;"	kind:variable	line:16
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='network',$/;"	kind:variable	line:24
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='network',$/;"	kind:variable	line:29
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='vm',$/;"	kind:variable	line:20
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='vm',$/;"	kind:variable	line:34
+model_name	../migrations/0002_auto_20171109_1426.py	/^            model_name='vm',$/;"	kind:variable	line:39
+model_name	../migrations/0003_auto_20171109_1431.py	/^            model_name='vm',$/;"	kind:variable	line:17
+model_name	../migrations/0003_auto_20171109_1431.py	/^            model_name='vm',$/;"	kind:variable	line:22
+model_name	../migrations/0004_auto_20171109_1641.py	/^            model_name='network',$/;"	kind:variable	line:17
+model_name	../migrations/0004_auto_20171109_1641.py	/^            model_name='vm',$/;"	kind:variable	line:22
+model_name	../migrations/0004_auto_20171109_1641.py	/^            model_name='vm',$/;"	kind:variable	line:27
+model_name	../migrations/0004_auto_20171109_1641.py	/^            model_name='vm',$/;"	kind:variable	line:32
+model_name	../migrations/0006_network_state.py	/^            model_name='network',$/;"	kind:variable	line:16
+model_name	../migrations/0007_auto_20171111_1042.py	/^            model_name='network',$/;"	kind:variable	line:16
+models	../migrations/0001_initial.py	/^from django.db import migrations, models$/;"	kind:namespace	line:6
+models	../migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:7
+models	../migrations/0002_auto_20171109_1426.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+models	../migrations/0003_auto_20171109_1431.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+models	../migrations/0003_auto_20171109_1431.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+models	../migrations/0004_auto_20171109_1641.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+models	../migrations/0004_auto_20171109_1641.py	/^import django.db.models.deletion$/;"	kind:namespace	line:6
+models	../migrations/0006_network_state.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+models	../migrations/0007_auto_20171111_1042.py	/^from django.db import migrations, models$/;"	kind:namespace	line:5
+models	../models.py	/^from django.db import models$/;"	kind:namespace	line:1
+models.py	../models.py	1;"	kind:file	line:1
+name	../apps.py	/^    name = 'InventoryAPI'$/;"	kind:variable	line:5
+name	../migrations/0001_initial.py	/^            name='Network',$/;"	kind:variable	line:20
+name	../migrations/0001_initial.py	/^            name='VM',$/;"	kind:variable	line:29
+name	../migrations/0002_auto_20171109_1426.py	/^            name='id',$/;"	kind:variable	line:17
+name	../migrations/0002_auto_20171109_1426.py	/^            name='id',$/;"	kind:variable	line:21
+name	../migrations/0002_auto_20171109_1426.py	/^            name='name',$/;"	kind:variable	line:25
+name	../migrations/0002_auto_20171109_1426.py	/^            name='name',$/;"	kind:variable	line:35
+name	../migrations/0002_auto_20171109_1426.py	/^            name='owner',$/;"	kind:variable	line:30
+name	../migrations/0002_auto_20171109_1426.py	/^            name='owner',$/;"	kind:variable	line:40
+name	../migrations/0003_auto_20171109_1431.py	/^            name='network_1',$/;"	kind:variable	line:18
+name	../migrations/0003_auto_20171109_1431.py	/^            name='network_2',$/;"	kind:variable	line:23
+name	../migrations/0004_auto_20171109_1641.py	/^            name='description',$/;"	kind:variable	line:18
+name	../migrations/0004_auto_20171109_1641.py	/^            name='description',$/;"	kind:variable	line:23
+name	../migrations/0004_auto_20171109_1641.py	/^            name='network_1',$/;"	kind:variable	line:28
+name	../migrations/0004_auto_20171109_1641.py	/^            name='network_2',$/;"	kind:variable	line:33
+name	../migrations/0005_auto_20171111_0959.py	/^            name='network',$/;"	kind:variable	line:16
+name	../migrations/0005_auto_20171111_0959.py	/^            name='vm',$/;"	kind:variable	line:20
+name	../migrations/0006_network_state.py	/^            name='state',$/;"	kind:variable	line:17
+name	../migrations/0007_auto_20171111_1042.py	/^            name='state',$/;"	kind:variable	line:17
+name	../models.py	/^    name = models.CharField(max_length=200, primary_key=True)$/;"	kind:variable	line:33
+name	../models.py	/^    name = models.CharField(max_length=200, primary_key=True)$/;"	kind:variable	line:9
+network_1	../models.py	/^    network_1 = models.ForeignKey(Network, related_name='network_1')$/;"	kind:variable	line:37
+network_2	../models.py	/^    network_2 = models.ForeignKey(Network, related_name='network_2')$/;"	kind:variable	line:38
+network_details	../views.py	/^def network_details(request):$/;"	kind:function	line:134
+networks	../views.py	/^def networks(request):$/;"	kind:function	line:101
+operations	../migrations/0001_initial.py	/^    operations = [$/;"	kind:variable	line:18
+operations	../migrations/0002_auto_20171109_1426.py	/^    operations = [$/;"	kind:variable	line:14
+operations	../migrations/0003_auto_20171109_1431.py	/^    operations = [$/;"	kind:variable	line:15
+operations	../migrations/0004_auto_20171109_1641.py	/^    operations = [$/;"	kind:variable	line:15
+operations	../migrations/0005_auto_20171111_0959.py	/^    operations = [$/;"	kind:variable	line:14
+operations	../migrations/0006_network_state.py	/^    operations = [$/;"	kind:variable	line:14
+operations	../migrations/0007_auto_20171111_1042.py	/^    operations = [$/;"	kind:variable	line:14
+os_flavor	../models.py	/^    os_flavor = models.CharField(max_length=30, choices=flavors, default='1')$/;"	kind:variable	line:40
+owner	../models.py	/^    owner = models.CharField(max_length=400) #user email$/;"	kind:variable	line:10
+owner	../models.py	/^    owner = models.CharField(max_length=400) #user email$/;"	kind:variable	line:34
+render	../views.py	/^from django.shortcuts import render$/;"	kind:namespace	line:1
+settings	../migrations/0001_initial.py	/^from django.conf import settings$/;"	kind:namespace	line:5
+state	../models.py	/^    state = models.CharField(max_length=20, choices=states, default='C')$/;"	kind:variable	line:12
+state	../models.py	/^    state = models.CharField(max_length=20, choices=states, default='C_D')$/;"	kind:variable	line:39
+states	../models.py	/^    states = (('C_D', 'Creating_Disk'), ('C_N', 'Configuring_Network'), ('U',$/;"	kind:variable	line:30
+states	../models.py	/^    states = (('U', 'Up'), ('C', 'Creating'))$/;"	kind:variable	line:8
+status	../views.py	/^from rest_framework import status$/;"	kind:namespace	line:7
+tests.py	../tests.py	1;"	kind:file	line:1
+unicode_literals	../migrations/0001_initial.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0002_auto_20171109_1426.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0003_auto_20171109_1431.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0004_auto_20171109_1641.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0005_auto_20171111_0959.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0006_network_state.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unicode_literals	../migrations/0007_auto_20171111_1042.py	/^from __future__ import unicode_literals$/;"	kind:namespace	line:3
+unique_together	../migrations/0005_auto_20171111_0959.py	/^            unique_together=set([('name', 'owner')]),$/;"	kind:variable	line:17
+unique_together	../migrations/0005_auto_20171111_0959.py	/^            unique_together=set([('name', 'owner')]),$/;"	kind:variable	line:21
+unique_together	../models.py	/^        unique_together = (('name', 'owner'))$/;"	kind:variable	line:28
+unique_together	../models.py	/^        unique_together = (('name', 'owner'))$/;"	kind:variable	line:6
+url	../urls.py	/^from django.conf.urls import url$/;"	kind:namespace	line:2
+urlpatterns	../urls.py	/^urlpatterns = [$/;"	kind:variable	line:9
+urls.py	../urls.py	1;"	kind:file	line:1
+views	../urls.py	/^from InventoryAPI import views$/;"	kind:namespace	line:1
+views.py	../views.py	1;"	kind:file	line:1
+vm_details	../views.py	/^def vm_details(request):$/;"	kind:function	line:53
+vms	../views.py	/^def vms(request):$/;"	kind:function	line:13

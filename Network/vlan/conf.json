@@ -1,0 +1,5 @@
+{
+    "broker": "localhost",
+    "key": "/home/maged/.ssh/id_rsa.pub",
+    "dbserver": "localhost"
+}
