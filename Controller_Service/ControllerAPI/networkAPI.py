@@ -101,7 +101,7 @@ class networkRequest(object):
     def _process_post(self):
         #validate network
         code  = network_validation(self.inv_addr, self.name, self.owner)
-        if code == 200:
+        if code != 404:
             return HttpResponse(status=status.HTTP_409_CONFLICT)
         #dispatch task
         task = network.networkTasks(

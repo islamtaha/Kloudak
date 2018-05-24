@@ -2,7 +2,7 @@ import requests
 from .decorators import retry
 from django.apps import apps
 from .exceptions import MethodNotSupportedException
-
+import jwt
 
 retries = 1
 wait = 0
@@ -27,7 +27,10 @@ def network_validation(addr, name, owner):
         -returns the status code of calling the object in Inventory API
     '''
     url = addr + owner + '/networks/' + name + '/'
-    res = requests.get(url)
+    payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
+    jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
+    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    res = requests.get(url, headers=headers)
     return res.status_code
 
 
@@ -37,7 +40,10 @@ def vm_validation(addr, name, owner):
         -returns the status code of calling the object in Inventory API
     '''
     url = addr + owner + '/vms/' + name + '/'
-    res = requests.get(url)
+    payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
+    jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
+    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    res = requests.get(url, headers=headers)
     return res.status_code
 
 
@@ -47,7 +53,10 @@ def router_validation(addr, name, owner):
         -returns the status code of calling the object in Inventory API
     '''
     url = addr + owner + '/routers/' + name + '/'
-    res = requests.get(url)
+    payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
+    jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
+    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    res = requests.get(url, headers=headers)
     return res.status_code
 
 
@@ -57,7 +66,10 @@ def interface_validation(addr, router, owner, network):
         -returns the status code of calling the object in Inventory API
     '''
     url = addr + owner + '/routers/' + router + '/interfaces/' + network + '/'
-    res = requests.get(url)
+    payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
+    jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
+    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    res = requests.get(url, headers=headers)
     return res.status_code
 
 
@@ -74,8 +86,11 @@ def api_call(method, url, body=''):
         'put': requests.put,
         'delete': requests.delete
         }
+    payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
+    jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
+    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
     if method not in calls.keys():
         raise MethodNotSupportedException
     if method == 'post' or method == 'put':
-        return calls[method](url, body)
+        return calls[method](url, data=body, headers=headers)
     return calls[method](url)

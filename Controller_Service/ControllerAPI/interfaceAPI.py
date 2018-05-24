@@ -117,7 +117,7 @@ class interfaceRequest(object):
     def _process_post(self):
         #validate router
         rcode = router_validation(self.inv_addr, self.router, self.owner)
-        if rcode != 200:
+        if rcode != 404:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         #validate interface
         code  = interface_validation(self.inv_addr, self.router, self.owner, self.network)

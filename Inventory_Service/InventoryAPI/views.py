@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 #from django.core import serializers
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -12,26 +12,6 @@ from rest_framework.authentication import get_authorization_header, BaseAuthenti
 import ipaddress, jwt
 from .decorators import admin_validate, UserToWorkspace_validate, set_token
 # Create your views here.
-
-
-
-#@login_required
-#@admin_validate
-#def validate_user(request):
-#    req_str = request.body.decode(encoding="utf-8", errors="strict")
-#    body = json.loads(req_str)
-#    username = body['username']
-#    name = body['workspace']
-#    task = body['task']
-#    try:
-#        workspace = Workspace.objects.get(name=name)
-#        user = User.get(name=username)
-#        profile = CustomUser.objects.get(user=user, workspace=workspace)
-#    except:
-#        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-#    if profile.check_permission(task):
-#        return HttpResponse(status=status.HTTP_200_OK)
-#    return HttpResponse(status.status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @csrf_exempt
@@ -53,7 +33,6 @@ def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, ' ', password)
         user = authenticate(username=username, password=password)
         userprofiles = CustomUser.objects.all().filter(user=user)
         userpermissions = {}
@@ -62,16 +41,22 @@ def userlogin(request):
         if user:
             login(request, user)
             jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
-            response = HttpResponse(jwt_token, status=status.HTTP_200_OK)
+            response = HttpResponse(json.dumps(jwt_token), status=status.HTTP_200_OK)
             response['token'] = jwt_token['token']
             return response
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
+def userlogout(request):
+    try:
+        logout(request.user)
+    except:
+        pass
+    return HttpResponse(status=status.HTTP_200_OK)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def vms(request):
     supported_methods = ["GET", "POST"]
@@ -120,9 +105,8 @@ def vms(request):
         return HttpResponse(res, status=status.HTTP_201_CREATED)
 
 
-@login_required
-@UserToWorkspace_validate
 @csrf_exempt
+@admin_validate
 @set_token
 def vm_details(request):
     supported_methods = ["GET", "PUT", "DELETE"]
@@ -179,9 +163,8 @@ def vm_details(request):
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
 
-#@login_required
-#@UserToWorkspace_validate
 @csrf_exempt
+@admin_validate
 @set_token
 def networks(request):
     supported_methods = ["GET", "POST"]
@@ -223,9 +206,9 @@ def networks(request):
         return HttpResponse(res, status=status.HTTP_201_CREATED)
 
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def network_details(request):
     supported_methods = ["GET", "PUT", "DELETE"]
@@ -272,9 +255,8 @@ def network_details(request):
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
 
-@login_required
-@admin_validate
 @csrf_exempt
+@admin_validate
 @set_token
 def areas(request):
     supported_methods = ["GET", "POST"]
@@ -307,9 +289,8 @@ def areas(request):
 
 
 
-@login_required
-@admin_validate
 @csrf_exempt
+@admin_validate
 @set_token
 def area_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]
@@ -356,7 +337,7 @@ def area_details(request):
         return HttpResponse(req_str, status=status.HTTP_202_ACCEPTED)
 
 
-@login_required
+@admin_validate
 @csrf_exempt
 def area_get_ip(request):
     supported_methods = ["GET"]
@@ -388,9 +369,9 @@ def area_get_ip(request):
         res = json.dumps({"ip": str(vm_ip)})
         return HttpResponse(res, status=status.HTTP_200_OK)
 
-@login_required
-@admin_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def templates(request):
     supported_methods = ["GET", "POST"]
@@ -426,7 +407,7 @@ def templates(request):
         return HttpResponse(req_str, status=status.HTTP_201_CREATED)
 
 
-@login_required
+
 @admin_validate
 @csrf_exempt
 @set_token
@@ -477,8 +458,8 @@ def template_details(request):
             VMTemplate.objects.get(name=temp_name).delete()
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
-@login_required
 @csrf_exempt
+@admin_validate
 @set_token
 def workspace(request):
     print(request.user)
@@ -524,9 +505,9 @@ def workspace(request):
         cs.save()
         return HttpResponse(req_str, status=status.HTTP_201_CREATED)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def workspace_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]
@@ -570,9 +551,9 @@ def workspace_details(request):
             Workspace.objects.get(name=workspace_name).delete()
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def routers(request):
     supported_methods = ["GET", "POST"]
@@ -610,9 +591,9 @@ def routers(request):
         res = json.dumps(req_dict)
         return HttpResponse(res, status=status.HTTP_201_CREATED)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def router_details(request):
     supported_methods = ["GET", "PUT", "DELETE"]
@@ -656,9 +637,9 @@ def router_details(request):
             Router.objects.get(owner=router_owner, name=router_name).delete()
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def interfaces(request):
     supported_methods = ["GET", "POST"]
@@ -708,9 +689,9 @@ def interfaces(request):
         res = json.dumps(req_dict)
         return HttpResponse(res, status=status.HTTP_201_CREATED)
 
-@login_required
-@UserToWorkspace_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def interface_details(request):
     supported_methods = ["GET", "PUT", "DELETE"]
