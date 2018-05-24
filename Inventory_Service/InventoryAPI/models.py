@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class VMTemplate(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
@@ -49,6 +50,67 @@ class Workspace(models.Model):
             "name": self.name
         }
 
+
+class CustomUser(models.Model):
+    class Meta:
+        unique_together = (("user", "workspace"))
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    vm_can_add = models.BooleanField()
+    vm_can_edit = models.BooleanField()
+    vm_can_delete = models.BooleanField()
+    network_can_add = models.BooleanField()
+    network_can_edit = models.BooleanField()
+    network_can_delete = models.BooleanField()
+    router_can_add = models.BooleanField()
+    router_can_edit = models.BooleanField()
+    router_can_delete = models.BooleanField()
+    user_can_add = models.BooleanField()
+    user_can_edit = models.BooleanField()
+    user_can_delete = models.BooleanField()
+    
+
+    def __str__(self):
+        return self.user.email
+
+    def as_dict(self):
+        return {
+            'username': self.user.username,
+            'email': self.user.email,
+            'vm_can_edit': self.vm_can_edit,
+            'vm_can_add': self.vm_can_add,
+            'vm_can_delete': self.vm_can_delete,
+            'network_can_edit': self.vm_can_edit,
+            'network_can_add': self.vm_can_add,
+            'network_can_delete': self.vm_can_delete,
+            'router_can_edit': self.vm_can_edit,
+            'router_can_add': self.vm_can_add,
+            'router_can_delete': self.vm_can_delete,
+            'user_can_edit': self.vm_can_edit,
+            'user_can_add': self.vm_can_add,
+            'user_can_delete': self.vm_can_delete
+        }
+
+    def check_permession(self, task):
+        permessions = {
+            'vm_can_edit': self.vm_can_edit,
+            'vm_can_add': self.vm_can_add,
+            'vm_can_delete': self.vm_can_delete,
+            'network_can_edit': self.vm_can_edit,
+            'network_can_add': self.vm_can_add,
+            'network_can_delete': self.vm_can_delete,
+            'router_can_edit': self.vm_can_edit,
+            'router_can_add': self.vm_can_add,
+            'router_can_delete': self.vm_can_delete,
+            'user_can_edit': self.vm_can_edit,
+            'user_can_add': self.vm_can_add,
+            'user_can_delete': self.vm_can_delete
+        }
+        if permessions['task']:
+            return True
+        else:
+            return False
 
 class Network(models.Model):
     class Meta:

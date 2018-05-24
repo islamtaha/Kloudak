@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-from .decorators import supported_methods, body_check
+from .decorators import supported_methods, body_check, check_permissions
 from .vmAPI import vmRequest
 from .networkAPI import networkRequest
 from .routerAPI import routerRequest
@@ -19,6 +19,7 @@ broker = appConfig.broker
 @csrf_exempt
 @supported_methods(['POST', 'PUT', 'DELETE'])
 @body_check(['name', 'owner'])
+@check_permissions('vm')
 def vms(request):
     req = vmRequest(request, inv_addr, broker)
     try:
@@ -32,6 +33,7 @@ def vms(request):
 @csrf_exempt
 @supported_methods(['POST', 'PUT', 'DELETE'])
 @body_check(['name', 'owner'])
+@check_permissions('network')
 def networks(request):
     req = networkRequest(request, inv_addr, broker)
     try:
@@ -45,6 +47,7 @@ def networks(request):
 @csrf_exempt
 @supported_methods(['POST', 'PUT', 'DELETE'])
 @body_check(['name', 'owner'])
+@check_permissions('router')
 def routers(request):
     req = routerRequest(request, inv_addr, broker)
     try:
@@ -58,6 +61,7 @@ def routers(request):
 @csrf_exempt
 @supported_methods(['POST', 'PUT', 'DELETE'])
 @body_check(['network', 'owner', 'router'])
+@check_permissions('router')
 def interfaces(request):
     req = interfaceRequest(request, inv_addr, broker)
     try:

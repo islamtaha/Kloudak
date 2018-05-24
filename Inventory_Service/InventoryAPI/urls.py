@@ -10,6 +10,8 @@ from django.contrib import admin
 
 
 urlpatterns = [
+    url(r'^signup/$', views.signup),
+    url(r'^login/$', views.userlogin),
     url(r'^.*/vms/$', views.vms),
     url(r'^.*/vms/.*/$', views.vm_details),
     url(r'^.*/networks/$', views.networks),

@@ -3,6 +3,41 @@ from .exceptions import APICallException
 from django.http import HttpResponse
 from rest_framework import status
 import json
+import jwt
+
+def check_permissions(obj=''):
+	def decorator(myview):
+		def wrapper(request):
+			token = request.META['HTTP_TOKEN']
+			token_dict = jwt.decode(token.encode('utf-8'), "SECRET_KEY", algorithm='HS256')
+			req_str = request.body.decode("utf-8", errors="strict")
+			req_dict = json.loads(req_str)
+			ws = req_dict['owner']
+			permission_dict = {
+				'vm': {
+					'POST': token_dict[ws]['vm_can_add'],
+					'PUT': token_dict[ws]['vm_can_edit'],
+					'DELETE': token_dict[ws]['vm_can_delete'],
+				},
+				'network': {
+					'POST': token_dict[ws]['network_can_add'],
+					'PUT': token_dict[ws]['network_can_edit'],
+					'DELETE': token_dict[ws]['network_can_delete'],
+				},
+				'router': {
+					'POST': token_dict[ws]['router_can_add'],
+					'PUT': token_dict[ws]['router_can_edit'],
+					'DELETE': token_dict[ws]['router_can_delete'],
+				}
+			}
+			obj_perms = permission_dict[obj]
+			if obj_perms[request.method]:
+				return myview(request)
+			else:
+				return HttpResponse('permission denied', status=status.HTTP_405_METHOD_NOT_ALLOWED)
+		return wrapper
+	return decorator
+		
 
 
 
@@ -15,8 +50,7 @@ def retry(retries=1, wait=0):
 			for i in range(0, retries):
 				try:
 					res = function(*args, **kwargs)
-				except:	
-					print(f'trial {i} failed. waiting to retry...')
+				except:
 					time.sleep(wait)
 					pass
 				else:

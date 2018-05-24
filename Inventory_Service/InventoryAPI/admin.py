@@ -1,7 +1,8 @@
 
 from django.contrib import admin
-from .models import VM, Network, Area, VMTemplate, FreeIP, Workspace, RouterInterface, Router
+from .models import VM, Network, Area, VMTemplate, FreeIP, Workspace, RouterInterface, Router, CustomUser
 # Register your models here.
+admin.site.register(CustomUser)
 admin.site.register(VM)
 admin.site.register(Network)
 admin.site.register(Area)
