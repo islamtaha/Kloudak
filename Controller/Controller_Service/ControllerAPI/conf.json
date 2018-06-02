@@ -1,6 +1,6 @@
 {
-    "inventory": "http://localhost:5000/",
-    "broker": "localhost",
+    "inventory": "http://172.17.0.1:5000/",
+    "broker": "172.17.0.1",
     "retries": 2,
     "wait": 1
 }

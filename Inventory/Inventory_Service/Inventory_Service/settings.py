@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'inventory',
         'USER': 'inv_user',
         'PASSWORD': 'Maglab123!',
-        'HOST': 'localhost',
+        'HOST': '172.17.0.1',
         'PORT': '5432',
     }
         }
