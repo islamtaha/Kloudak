@@ -13,7 +13,6 @@ import ipaddress, jwt
 from .decorators import admin_validate, UserToWorkspace_validate, set_token
 # Create your views here.
 
-
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
@@ -21,12 +20,11 @@ def signup(request):
         password = request.POST.get('password')
         email = request.POST.get('email')
         try:
-            newuser = User(username=username, password=password, email=email)
+            newuser = User.objects.create_user(username=username, password=password, email=email)
             newuser.save()
         except Exception as e:
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-        user = authenticate(username=username, password=password)
-        login(request, user)
+        login(request, newuser)
         return HttpResponse(status=status.HTTP_201_CREATED)
 
 @csrf_exempt
@@ -134,7 +132,29 @@ def UserProfile_Details(request):
         profile.delete()
         return HttpResponse(status=status.HTTP_202_ACCEPTED)
     if request.method == 'PUT':
-
+        cp = CustomUser.objects.get(user=request.user, workspace=workspace)
+        if not cp.can_edit_user:
+            return HttpResponse('permission denied', status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        req_str = request.body.decode(encoding="utf-8", errors="strict")
+        try:
+            req_dict = json.loads(req_str)
+            profile.vm_can_add = req_dict['vm_can_add']
+            profile.vm_can_edit = req_dict['vm_can_edit']
+            profile.vm_can_delete = req_dict['vm_can_delete']
+            profile.network_can_add = req_dict['network_can_add']
+            profile.network_can_edit = req_dict['network_can_edit']
+            profile.network_can_delete = req_dict['network_can_delete']
+            profile.router_can_add = req_dict['router_can_add']
+            profile.router_can_edit = req_dict['router_can_edit']
+            profile.router_can_delete = req_dict['router_can_delete']
+            profile.user_can_add = req_dict['user_can_add']
+            profile.user_can_edit = req_dict['user_can_edit']
+            profile.user_can_delete = req_dict['user_can_delete']
+        except Exception as e:
+            return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
+        profile.save()
+        return HttpResponse(req_str, status=status.HTTP_200_OK)
+            
 
 
 @csrf_exempt
@@ -542,7 +562,6 @@ def template_details(request):
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
 @csrf_exempt
-@admin_validate
 @set_token
 def workspace(request):
     supported_methods = ["GET", "POST"]
@@ -589,7 +608,7 @@ def workspace(request):
 
 
 @csrf_exempt
-@admin_validate
+@UserToWorkspace_validate
 @set_token
 def workspace_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]

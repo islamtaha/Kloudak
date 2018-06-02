@@ -9,11 +9,11 @@ def UserToWorkspace_validate(myview):
     def wrapper(request):
         if request.user.is_superuser:
             return myview(request)
-        name = request.path.split('/')[1]
+        name = request.path.split('/')[2]
         try:
             workspace = Workspace.objects.get(name=name)
             profile = CustomUser.objects.get(user=request.user, workspace=workspace)
-        except:
+        except Exception as e:
             return HttpResponse('wrong workspace!', status=status.HTTP_400_BAD_REQUEST)
         return myview(request)
     return wrapper
@@ -24,7 +24,6 @@ def admin_validate(myview):
             return myview(request)
         try:
             token = request.META['HTTP_TOKEN']
-            #print()
             token_dict = jwt.decode(token.encode('utf-8'), "SECRET_KEY", algorithm='HS256')
             username = token_dict['username']
             user = User.objects.get(username=username)
