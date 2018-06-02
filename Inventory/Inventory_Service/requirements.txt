@@ -1,0 +1,5 @@
+django>=2.0
+django-extensions>=2.0
+psycopg2
+pyjwt
+django-rest-framework

@@ -29,6 +29,11 @@ class vm(item):
         self.network_map = []
         self.ifaces = []
 
+
+    def _genXML(self, pi, vol):
+        pass
+
+
     def _createDir(self, host_ip, path):
         dirName = f'{path}/{self.name}-{self.owner}'
         ssh = paramiko.SSHClient()
