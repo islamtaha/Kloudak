@@ -2,7 +2,6 @@ import pika
 import json
 import ovsNetwork
 import NetworkDB
-import daemon
 
 from config import broker, key
 
@@ -72,8 +71,7 @@ def handler(ch, method, properties, body):
 
 
 if __name__ == '__main__':
-    with daemon.DaemonContext():
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
-        channel = connection.channel()
-        channel.basic_consume(handler, queue='network')
-        channel.start_consuming()
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+    channel = connection.channel()
+    channel.basic_consume(handler, queue='network')
+    channel.start_consuming()

@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 #from django.core import serializers
 from django.contrib.auth import login, authenticate, logout
@@ -40,6 +40,11 @@ def userlogin(request):
         if user:
             login(request, user)
             jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
+            res = redirect('http://localhost:5000/workspaces/')
+            res['token'] = jwt_token['token']
+            print(res.META)
+            return res
+            print('here')
             response = HttpResponse(json.dumps(jwt_token), status=status.HTTP_200_OK)
             response['token'] = jwt_token['token']
             return response
