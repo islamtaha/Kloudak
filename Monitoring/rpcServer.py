@@ -69,7 +69,8 @@ def host_request(ch, method, props, body):
     response = {'name': h.host_name, 'ip': h.host_ip}
     jres = json.dumps(response)
     ch.basic_publish(exchange='',
-    routing_key=pika.BasicProperties(correlation_id=props.correlation_id),
+    routing_key=props.reply_to,
+    properties=pika.BasicProperties(correlation_id=props.correlation_id),
     body=jres
     )
     ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -81,7 +82,8 @@ def pool_request(ch, method, props, body):
     response = {'name': p.pool_name}
     jres = json.dumps(response)
     ch.basic_publish(exchange='',
-    routing_key=pika.BasicProperties(correlation_id=props.correlation_id),
+    routing_key=props.reply_to,
+    properties=pika.BasicProperties(correlation_id=props.correlation_id),
     body=jres
     )
     ch.basic_ack(delivery_tag=method.delivery_tag)
