@@ -33,4 +33,3 @@ def put(body_dict):
 def delete(body_dict):
     v = vm().get(body_dict['name'], body_dict['owner'])
     v.delete()
-    pass
