@@ -117,7 +117,7 @@ class host(item):
 
     def create_vm(self, name, owner, cpu, memory, ip, password, template, size, p_pool, networks=[], key=''):
         v = vm(
-            name=name, owner=owner, cpus=cpu, memory=memory, p_host=self, p_pool=p_pool
+            name=name, owner=owner, cpus=cpu, memory=memory, p_host=self, p_pool=p_pool, p_area=self.p_area
         )
         v.create(ip, password, size, template, key=key)
         return v

@@ -5,9 +5,9 @@ channel = connection.channel()
 channel.queue_declare('vm')
 
 pbody = {
-                "method": "POST",
+                "method": "DELETE",
                 "type": "vm",
-                "name": "VM-01",
+                "name": "VM-18",
                 "owner": "Workspace-01",
                 "description": "",
                 "ip": "10.10.10.50/24",
@@ -17,8 +17,8 @@ pbody = {
                 "ram": 2,
                 "disk": 10,
                 "password": "Maglab123!",
-                "template": "Template-01",
-                "os": "CentOS7"
+                "template": "Template-01.raw",
+                "os": "Fedora"
             }
 
 channel.basic_publish(exchange='', routing_key='vm', body=json.dumps(pbody))

@@ -10,34 +10,39 @@ def handler(ch, method, properties, body):
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
     data = json.loads(body.decode('utf-8'))
-    if 'host' in data.keys():
+    if 'networks' in data.keys():
         body = {}
+        response = {'networks':[]}
         #consume messages from compute service
-        name = data['name']
-        owner = data['owner']
-        host = data['host']
-        iface = data['iface']
-        network = NetworkDB.privateNetwork(name=name, owner=owner)
-        vlan_id = network.getID()
-        if vlan_id:
-            conf = ovsNetwork.VLANConf(iface=iface, host=host, vlan_id=vlan_id, key_path=key)
-            res = conf.add()
-        else:
-            #log the message to syslog
-            msg = f'failed to get vlan_id with error {network.error}'
-            body['status'] = 'failed'
+        for net in data['networks']:
+            name = net['name']
+            owner = net['owner']
+            host = net['host']
+            iface = net['iface']
+            network = NetworkDB.privateNetwork(name=name, owner=owner)
+            vlan_id = network.getID()
+            if vlan_id:
+                conf = ovsNetwork.VLANConf(iface=iface, host=host, vlan_id=vlan_id, key_path=key)
+                res = conf.add()
+            else:
+                #log the message to syslog
+                msg = f'failed to get vlan_id with error {network.error}'
+                body['status'] = 'failed'
 
-        conn = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
-        chan = conn.channel()
-        body['name'] = name
-        body['owner'] = owner
-        body['iface'] = iface
-        if not res:
-            #log msg to syslog
-            msg = f'failed to add iface {iface} to vlan {vlan_id} with error {conf.error}'
-            body['status'] = 'failed'
-        else:
-            body['status'] = 'success'
+            conn = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+            chan = conn.channel()
+            body['name'] = name
+            body['owner'] = owner
+            body['iface'] = iface
+            if not res:
+                #log msg to syslog
+                msg = f'failed to add iface {iface} to vlan {vlan_id} with error {conf.error}'
+                body['status'] = 'failed'
+                response['status'] = 'failed'
+                break
+            else:
+                body['status'] = 'success'
+                response['networks'].append(body)
         jbody = json.dumps(body)
         chan.basic_publish(
                 exchange='',

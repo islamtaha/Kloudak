@@ -10,7 +10,8 @@ from .orm_schema import Pool, Host
 from .orm_schema import VirtualMachine, PublicIface, PrivateIface
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
-
+from .rpcClient import HostRpcClient, PoolRpcClient
+import json
 
 
 class area(item):
@@ -51,9 +52,10 @@ class area(item):
     def create_vm(self, name, owner, cpu, memory, ip, password, template, size, networks=[], key=''):
         p = self._choose_Pool(size)
         h = self._choose_Host(cpu, memory)
-        p_pool = pool().get(name=p.pool_name, p_area=self)
-        p_host = host().get(name=h.host_name, p_area=self)
+        p_pool = pool().get(name=p, p_area=self)
+        p_host = host().get(name=h, p_area=self)
         v = p_host.create_vm(name, owner, cpu, memory, ip, password, template, size, p_pool=p_pool)
+        return v
 
 
     def add_pool(self, name, path, ptype='dir', source_path='', hostname=''):
@@ -73,47 +75,15 @@ class area(item):
         h.delete()
 
     def _choose_Host(self, cpu, memory):
-        postgres_db = {'drivername': 'postgres',
-               'username': 'comp_admin',
-               'password': 'Maglab123!',
-               'host': database,
-               'port': 5432,
-               'database': 'compute'}
-        uri = URL(**postgres_db)
-        engine = create_engine(uri)
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        io = dbIO(database)
-        a = io.query(Area, area_name=self.name)[0]
-        m = memory
-        q = session.query(Host).filter(Host.host_free_memory>=m, Host.state==True, Host.area_id==a.area_id).all()
-        max_m = 0
-        max_h = None
-        for h in q:
-            if h.host_memory >= max_m:
-                max_m = h.host_memory
-                max_h = h 
-        return max_h
+        host_rpc = HostRpcClient()
+        response = host_rpc.call(cpu, memory, self.name) 
+        #print(response)
+        #h = json.loads(response)['name']
+        return response
 
     def _choose_Pool(self, size):
-        postgres_db = {'drivername': 'postgres',
-               'username': 'comp_admin',
-               'password': 'Maglab123!',
-               'host': database,
-               'port': 5432,
-               'database': 'compute'}
-        uri = URL(**postgres_db)
-        engine = create_engine(uri)
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        io = dbIO(database)
-        a = io.query(Area, area_name=self.name)[0]
-        s = size
-        q = session.query(Pool).filter(Pool.pool_free_size>=s, Pool.area_id==a.area_id).all()
-        max_s = 0
-        max_p = None
-        for p in q:
-            if p.pool_size >= max_s:
-                max_s = p.pool_size
-                max_p = p 
-        return max_p
+        pool_rpc = PoolRpcClient()
+        response = pool_rpc.call(size, self.name)
+        #print(response)
+        #p = json.loads(response)['name']
+        return response 

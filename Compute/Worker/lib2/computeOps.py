@@ -2,9 +2,9 @@
 
 from .base import item, database, dbIO
 from .orm_schema import Host, VirtualMachine, Template, Area, Volume, Pool
-from .areaOps import area
-from .poolOps import pool
-from .hostOps import host
+#from .areaOps import area
+#from .poolOps import pool
+#from .hostOps import host
 from .storageOps import volume
 from .networkOps import publicIface, privateIface
 from .configOps import userData, metaData, configIso
@@ -58,7 +58,10 @@ class vm(item):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
             ssh.connect(host_ip, username='root')
-        except:
+        except Exception as e:
+            print(e)
+            print(host_ip)
+            print(path)
             raise ConnectionFailedException('failed to connect to host')
         cmd = f"rm -rf {dirName}"
         stdin, stdout, stderr = ssh.exec_command(cmd)
@@ -96,20 +99,23 @@ class vm(item):
         io.add([v])
         try:
             p = self._createDir(self.p_host.ip, self.p_pool.path)
-        except:
+        except Exception as e:
+            print(e)
             io.delete([v])
             raise CreateVmException('failed to create directory')
         vol = volume(self, self.p_pool, size=size)
         try:
             vol.create(template, self.p_host.ip)
-        except:
+        except Exception as e:
+            print(e)
             io.delete([v])
             self._deleteDir(self.p_host, self.p_pool.path)
             raise CreateVmException('failed to create volume')
         pi = publicIface(self, self.p_host)
         try:
             pi.create()
-        except:
+        except Exception as e:
+            print(e)
             self._deleteDir(self.p_host, self.p_pool.path)
             vol.delete(self.p_host.ip)
             io.delete([v])
@@ -132,7 +138,8 @@ class vm(item):
             		<mac address="{m}"/>
             		<target dev="{pvi.name}"/>
             		</interface>'''
-                except:
+                except Exception as e:
+                    print(e)
                     self._deleteDir(self.p_host.ip, self.p_pool.path)
                     vol.delete(self.p_host.ip)
                     pi.delete()
@@ -146,7 +153,8 @@ class vm(item):
         md = metaData(self.name, self.name, t.template_ifname, ip, a.area_gw)
         try:
             md.create(self.p_host.ip, p)
-        except:
+        except Exception as e:
+            print(e)
             self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
@@ -159,7 +167,8 @@ class vm(item):
         ud = userData(password, **kwargs)
         try:
             ud.create(self.p_host.ip, p)
-        except:
+        except Exception as e:
+            print(e)
             self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
@@ -171,7 +180,8 @@ class vm(item):
         iso = configIso(md, ud)
         try:
             iso_p = iso.create(self.p_host.ip, p)
-        except:
+        except Exception as e:
+            print(e)
             self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
@@ -237,7 +247,10 @@ class vm(item):
 
     
     @classmethod
-    def get(cls, name, owner, p_area):
+    def get(cls, name, owner): #p_area):
+        from .areaOps import area
+        from .poolOps import pool
+        from .hostOps import host
         io = dbIO(database)
         v = io.query(VirtualMachine, vm_name=name, vm_owner=owner)[0]
         h = io.query(Host, host_id=v.host_id)[0]
@@ -279,5 +292,5 @@ class vm(item):
         v.delete(self.p_host.ip)
         #configIso().delete(self.p_host.ip, f'{self.p_pool.path}/{self.name}-{self.owner}/')
         io = dbIO(database)
-        vm = io.query(VirtualMachine, name=self.name, owner=self.owner)[0]
+        vm = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)[0]
         io.delete([vm])

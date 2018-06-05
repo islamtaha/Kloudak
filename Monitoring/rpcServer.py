@@ -64,6 +64,7 @@ def choose_Pool(size, area):
 
 
 def host_request(ch, method, props, body):
+    print(body)
     body_dict = json.loads(body.decode('utf-8'))
     h = choose_Host(body_dict['cpu'], body_dict['memory'], body_dict['area'])
     response = {'name': h.host_name, 'ip': h.host_ip}
@@ -77,6 +78,7 @@ def host_request(ch, method, props, body):
 
 
 def pool_request(ch, method, props, body):
+    print(body)
     body_dict = json.loads(body.decode('utf-8'))
     p = choose_Pool(body_dict['size'], body_dict['area'])
     response = {'name': p.pool_name}
@@ -108,8 +110,8 @@ def poolThread():
 
 
 def main():
-    hThread = Thread(target=hostThread, daemon=True)
-    pThread = Thread(target=poolThread, daemon=True)
+    hThread = Thread(target=hostThread, daemon=False)
+    pThread = Thread(target=poolThread, daemon=False)
     hThread.start()
     pThread.start()
     hThread.join()
