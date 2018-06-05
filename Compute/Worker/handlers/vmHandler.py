@@ -23,7 +23,7 @@ def post(body_dict):
     )
     netReq_dict = {}
     netReq_dict['networks'] = v.network_map
-    networkTask(broker, json.loads(netReq_dict))
+    networkTask(broker, json.dumps(netReq_dict))
 
     
 
