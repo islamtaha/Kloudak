@@ -17,7 +17,7 @@ from .exceptions import CreateVmException
 
 
 class vm(item):
-    def __init__(self, name='', owner='', cpus=0, memory=0, p_pool=None, p_host=None, p_area=None, networks=[]):
+    def __init__(self, name='', owner='', cpus=0, memory=0, p_pool=None, p_host=None, p_area=None, pi=None, networks=[]):
         self.name = name
         self.owner = owner
         self.cpus = cpus
@@ -28,6 +28,7 @@ class vm(item):
         self.networks = networks
         self.network_map = []
         self.ifaces = []
+        self.pi = pi
 
 
     def _genXML(self, pi, vol):
@@ -114,6 +115,7 @@ class vm(item):
         pi = publicIface(self, self.p_host)
         try:
             pi.create()
+            self.pi = pi
         except Exception as e:
             print(e)
             self._deleteDir(self.p_host, self.p_pool.path)
@@ -270,6 +272,8 @@ class vm(item):
             memory=v.vm_memory,
             )
         ifaces = privateIface().getAll(res, p_host)
+        pi = publicIface().get(res, p_host)
+        res.pi = pi
         res.ifaces = ifaces
         for i in ifaces:
             res.networks.append(i.network)
@@ -286,6 +290,7 @@ class vm(item):
         dom = con.lookupByName(f'{self.name}-{self.owner}')
         dom.destroy()
         dom.undefine()
+        self.pi.delete()
         for i in self.ifaces:
             i.delete()
         v = volume(self, self.p_pool)
