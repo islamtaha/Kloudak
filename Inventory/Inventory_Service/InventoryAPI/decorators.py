@@ -50,15 +50,16 @@ def admin_validate(myview):
 def set_token(myview):
     def wrapper(request):
         resp = myview(request)
-        if not request.user.is_anonymous:
-            if request.user.is_superuser:
-                return resp
-            userprofiles = CustomUser.objects.all().filter(user=request.user)
-            userpermissions = {}
-            for up in userprofiles:
-                userpermissions[up.workspace.name] = up.as_dict()
-            jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
-            resp['token'] = jwt_token['token']
+        if request.method == 'GET':
+            if not request.user.is_anonymous:
+                if request.user.is_superuser:
+                    return resp
+                userprofiles = CustomUser.objects.all().filter(user=request.user)
+                userpermissions = {'username': request.user.username}
+                for up in userprofiles:
+                    userpermissions[up.workspace.name] = up.as_dict()
+                jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
+                resp['token'] = jwt_token['token']
         return resp
     return wrapper
         

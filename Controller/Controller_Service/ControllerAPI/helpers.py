@@ -29,7 +29,7 @@ def network_validation(addr, name, owner):
     url = addr + owner + '/networks/' + name + '/'
     payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
     jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
-    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    headers = {'token': jwt_token.decode('utf-8')}
     res = requests.get(url, headers=headers)
     return res.status_code
 
@@ -42,7 +42,7 @@ def vm_validation(addr, name, owner):
     url = addr + owner + '/vms/' + name + '/'
     payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
     jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
-    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    headers = {'token': jwt_token.decode('utf-8')}
     res = requests.get(url, headers=headers)
     return res.status_code
 
@@ -55,7 +55,7 @@ def router_validation(addr, name, owner):
     url = addr + owner + '/routers/' + name + '/'
     payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
     jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
-    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    headers = {'token': jwt_token.decode('utf-8')}
     res = requests.get(url, headers=headers)
     return res.status_code
 
@@ -68,7 +68,7 @@ def interface_validation(addr, router, owner, network):
     url = addr + owner + '/routers/' + router + '/interfaces/' + network + '/'
     payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
     jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
-    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    headers = {'token': jwt_token.decode('utf-8')}
     res = requests.get(url, headers=headers)
     return res.status_code
 
@@ -88,9 +88,9 @@ def api_call(method, url, body=''):
         }
     payload = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'mykey'}
     jwt_token = jwt.encode(payload, "SECRET_KEY", algorithm="HS256")
-    headers = {'token': jwt_token.decode('utf-8'), 'HTTP_TOKEN': jwt_token.decode('utf-8')}
+    headers = {'token': jwt_token.decode('utf-8')}
     if method not in calls.keys():
         raise MethodNotSupportedException
     if method == 'post' or method == 'put':
         return calls[method](url, data=body, headers=headers)
-    return calls[method](url)
+    return calls[method](url, headers=headers)

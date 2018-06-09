@@ -54,7 +54,7 @@ class area(item):
         h = self._choose_Host(cpu, memory)
         p_pool = pool().get(name=p, p_area=self)
         p_host = host().get(name=h, p_area=self)
-        v = p_host.create_vm(name, owner, cpu, memory, ip, password, template, size, p_pool=p_pool)
+        v = p_host.create_vm(name, owner, cpu, memory, ip, password, template, size, p_pool=p_pool, networks=networks)
         return v
 
 

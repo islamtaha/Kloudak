@@ -7,7 +7,7 @@ channel.queue_declare('vm')
 pbody = {
                 "method": "DELETE",
                 "type": "vm",
-                "name": "VM-18",
+                "name": "VM-27",
                 "owner": "Workspace-01",
                 "description": "",
                 "ip": "10.10.10.50/24",

@@ -37,14 +37,13 @@ def userlogin(request):
         userpermissions = {}
         for up in userprofiles:
             userpermissions[up.workspace.name] = up.as_dict()
+            userpermissions['username'] = user.username
         if user:
             login(request, user)
             jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
             res = redirect('http://localhost:5000/workspaces/')
             res['token'] = jwt_token['token']
-            print(res.META)
             return res
-            print('here')
             response = HttpResponse(json.dumps(jwt_token), status=status.HTTP_200_OK)
             response['token'] = jwt_token['token']
             return response
@@ -219,6 +218,7 @@ def vms(request):
 @admin_validate
 @set_token
 def vm_details(request):
+    print('here vm_details')
     supported_methods = ["GET", "PUT", "DELETE"]
     workspace = request.path.split('/')[1]
     vm_name = request.path.split('/')[3]
@@ -445,17 +445,20 @@ def area_details(request):
         return HttpResponse(req_str, status=status.HTTP_202_ACCEPTED)
 
 
-@admin_validate
 @csrf_exempt
+@admin_validate
 def area_get_ip(request):
+    print('here')
     supported_methods = ["GET"]
     if request.method not in supported_methods:
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     area_name = request.path.split("/")[2]
+    print(area_name)
     if request.method == "GET":
         try:
             area = Area.objects.get(name=area_name)
+            print(area)
         except Area.DoesNotExist:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         free_ip_queryset = FreeIP.objects.all().filter(area=Area.objects.get(name=area))
@@ -516,8 +519,9 @@ def templates(request):
 
 
 
-@admin_validate
+
 @csrf_exempt
+@admin_validate
 @set_token
 def template_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]
