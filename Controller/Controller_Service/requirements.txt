@@ -5,3 +5,4 @@ pyjwt
 django-rest-framework
 pika
 requests
+django-cors-headers

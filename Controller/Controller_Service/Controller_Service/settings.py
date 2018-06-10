@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'ControllerAPI',
-    'broker_tasks'
+    'broker_tasks',
+    'cors'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Controller_Service.urls'
@@ -106,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -119,6 +122,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
 
 
 # Static files (CSS, JavaScript, Images)

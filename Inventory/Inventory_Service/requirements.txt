@@ -3,3 +3,4 @@ django-extensions>=2.0
 psycopg2-binary
 pyjwt
 django-rest-framework
+django-cors-headers

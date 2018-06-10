@@ -19,10 +19,7 @@ engine = create_engine(uri)
 base.metadata.create_all(engine)
 print('created schema')
 
-io = dbIO(conf_dict['database'])
+io = dbIO('172.17.0.1')
 vlans = []
-for i in range(2,4090):
-    vlan = Vlan(vlan_id=i)
-    vlans.append(vlan)
-
-io.add(vlans)
+for i in range(0,4090):
+    io.add([Vlan(vlan_id=i)])

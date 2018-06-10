@@ -26,6 +26,12 @@ class Host(base):
     area_id = Column(Integer(), ForeignKey('areas.area_id'))
 
 
+class Vlan(base):
+    __tablename__ = 'vlans'
+
+    vlan_id = Column(Integer(), primary_key=True)
+    vlan_available = Column(Boolean(), nullable=False, default=True)
+
 
 class Network(base):
     __tablename__ = 'networks'
@@ -36,12 +42,6 @@ class Network(base):
     network_owner = Column(String(50), index=True, nullable=False, unique=True)
     vlan_id = Column(Integer(), ForeignKey('vlans.vlan_id'))
 
-
-class Vlan(base):
-    __tablename__ = 'vlans'
-
-    vlan_id = vm_id = Column(Integer(), primary_key=True)
-    vlan_available = Column(Boolean(), nullable=False, default=True)
 
 
 class Iface(base):

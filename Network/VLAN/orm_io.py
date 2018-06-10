@@ -1,7 +1,7 @@
 #/usr/bin/python3.6
 
 from sqlalchemy import create_engine, func
-from orm_schema import Area, Pool, Host, VirtualMachine
+from orm_schema import Area, Host, Network, Iface, Vlan
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 
@@ -12,11 +12,11 @@ class dbIO(object):
     '''interface used to interact with database objects'''
     def __init__(self, db_server):
         postgres_db = {'drivername': 'postgres',
-               'username': 'mon_admin',
+               'username': 'net_admin',
                'password': 'Maglab123!',
                'host': db_server,
                'port': 5432,
-               'database': 'monitor'}
+               'database': 'network'}
         uri = URL(**postgres_db)
         engine = create_engine(uri)
         Session = sessionmaker(bind=engine)
@@ -86,3 +86,17 @@ class dbIO(object):
                 self.session.commit()
                 break
         return o
+
+
+class dbTransaction:
+    def __init__(self, db_server):
+        postgres_db = {'drivername': 'postgres',
+               'username': 'net_admin',
+               'password': 'Maglab123!',
+               'host': db_server,
+               'port': 5432,
+               'database': 'network'}
+        uri = URL(**postgres_db)
+        engine = create_engine(uri)
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
