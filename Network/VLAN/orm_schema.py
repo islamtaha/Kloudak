@@ -51,3 +51,4 @@ class Iface(base):
     iface_name = Column(String(50), index=True, nullable=False)
     iface_mac = Column(String(50), index=True, nullable=False)
     network_id = Column(Integer(), ForeignKey('networks.network_id'))
+    host_id = Column(Integer, ForeignKey('hosts.host_id'))

@@ -88,6 +88,9 @@ class dbIO(object):
         return o
 
 
+
+
+
 class dbTransaction:
     def __init__(self, db_server):
         postgres_db = {'drivername': 'postgres',
@@ -100,3 +103,74 @@ class dbTransaction:
         engine = create_engine(uri)
         Session = sessionmaker(bind=engine)
         self.session = Session()
+
+
+    def query(self, cl, **kwargs):
+        '''parameters:
+            - cl > class of sqlalchemy orm
+            returns a list of objects
+            example:
+                t = dbTransaction('127.0.0.1')
+                areas = t.query(Area, area_name='Area-01')
+        '''
+        res = self.session.query(cl).filter_by(**kwargs).all()
+
+
+    def generatorQuery(self, cl, **kwargs):
+        '''parameters:
+            - cl > class of sqlalchemy orm
+            retruns a generator
+            example:
+                t = dbTransaction('127.0.0.1')
+                g = t.generatorQuery(Area)
+                a = next(g)
+        '''
+        for res in self.session.query(cl).filter_by(**kwargs).all():
+            yield res
+
+
+    def add(self, objs=[]):
+        '''parameters:
+            - objs > a list of the objects to be added
+            no return
+            example:
+                a1 = Area(area_name='Area-01')
+                p1 = Pool(pool_name='Pool-01', pool_size=50, pool_free_size=50, pool_area_id=a1.area_id)
+                t = dbTransaction('127.0.0.1')
+                t.add([a1, p1])
+                t.commit()
+        '''
+        for obj in objs:
+            self.session.add(obj)
+
+
+    def delete(self, objs=[]):
+        '''parameters:
+            - objs > a list of the objects to be deleted
+            no return
+        '''
+        for obj in objs:
+            self.session.delete(obj)
+
+
+    def update(self, obj, update_dict={}):
+        '''parameters:
+            - obj > the object to be updated
+            - update_dict > dictionary containing pairs of attribute name(str) and new value
+            returns modified object
+            example:
+                t = dbTransaction('127.0.0.1')
+                areas = t.query(Area)
+                a = t.update(areas[-1], {'area_name': 'New_Area'})
+                t.commit()
+        '''
+        q = self.session.query(type(obj)).all()
+        for o in q:
+            if obj == o:
+                for attr in update_dict:
+                    setattr(o, attr, update_dict[attr])
+                break
+        return o
+
+    def commit(self):
+        self.session.commit()

@@ -10,6 +10,7 @@ from django.contrib import admin
 
 
 urlpatterns = [
+    url(r'^get_token/$', views.get_token),
     url(r'^signup/$', views.signup),
     url(r'^login/$', views.userlogin),
     url(r'^.*/users/$', views.UserProfiles),

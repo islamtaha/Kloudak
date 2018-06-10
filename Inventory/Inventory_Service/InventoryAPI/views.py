@@ -13,6 +13,22 @@ import ipaddress, jwt
 from .decorators import admin_validate, UserToWorkspace_validate, set_token
 # Create your views here.
 
+
+@login_required
+def get_token(request):
+    if request.method == 'GET':
+        userprofiles = CustomUser.objects.all().filter(user=request.user)
+        userpermissions = {}
+        for up in userprofiles:
+            userpermissions[up.workspace.name] = up.as_dict()
+        userpermissions['username'] = request.user.username
+        jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
+        return HttpResponse(json.dumps(jwt_token), status=status.HTTP_200_OK)
+    else:
+        return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
@@ -32,12 +48,14 @@ def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        print(username)
+        print(password)
         user = authenticate(username=username, password=password)
         userprofiles = CustomUser.objects.all().filter(user=user)
         userpermissions = {}
         for up in userprofiles:
             userpermissions[up.workspace.name] = up.as_dict()
-            userpermissions['username'] = user.username
+        userpermissions['username'] = user.username
         if user:
             login(request, user)
             jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
@@ -571,8 +589,10 @@ def template_details(request):
         return HttpResponse(req_str, status=status.HTTP_200_OK)
 
 @csrf_exempt
+@login_required
 @set_token
 def workspace(request):
+    print(request.META)
     supported_methods = ["GET", "POST"]
     if request.method not in supported_methods:
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)

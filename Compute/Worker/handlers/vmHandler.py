@@ -10,7 +10,6 @@ from lib2.computeOps import vm
 
 def post(body_dict):
     ns = [net_dict["name"] for net_dict in body_dict["networks"]]
-    print(ns)
     try:
         a = area().get(name=body_dict['area'])
         v = a.create_vm(
@@ -27,10 +26,11 @@ def post(body_dict):
         netReq_dict = {}
         netReq_dict['method'] = 'POST'
         netReq_dict['networks'] = v.network_map
+        netReq_dict['vm'] = body_dict['name']
+        netReq_dict['owner'] = body_dict['owner']
         networkTask(broker, netReq_dict)
         body_dict['status'] = 'success'
     except Exception as e:
-        print(e)
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)
 
@@ -47,6 +47,8 @@ def delete(body_dict):
         print(v)
         netReq_dict = {}
         netReq_dict['method'] = 'DELETE'
+        netReq_dict['vm'] = body_dict['name']
+        netReq_dict['owner'] = body_dict['owner']
         netReq_dict['networks'] = v.network_map
         networkTask(broker, netReq_dict)
         v.delete()
