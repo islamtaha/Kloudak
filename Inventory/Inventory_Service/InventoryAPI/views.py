@@ -48,8 +48,6 @@ def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username)
-        print(password)
         user = authenticate(username=username, password=password)
         userprofiles = CustomUser.objects.all().filter(user=user)
         userpermissions = {}
@@ -236,7 +234,6 @@ def vms(request):
 @admin_validate
 @set_token
 def vm_details(request):
-    print('here vm_details')
     supported_methods = ["GET", "PUT", "DELETE"]
     workspace = request.path.split('/')[1]
     vm_name = request.path.split('/')[3]
@@ -466,17 +463,14 @@ def area_details(request):
 @csrf_exempt
 @admin_validate
 def area_get_ip(request):
-    print('here')
     supported_methods = ["GET"]
     if request.method not in supported_methods:
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     area_name = request.path.split("/")[2]
-    print(area_name)
     if request.method == "GET":
         try:
             area = Area.objects.get(name=area_name)
-            print(area)
         except Area.DoesNotExist:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         free_ip_queryset = FreeIP.objects.all().filter(area=Area.objects.get(name=area))
@@ -592,7 +586,6 @@ def template_details(request):
 @login_required
 @set_token
 def workspace(request):
-    print(request.META)
     supported_methods = ["GET", "POST"]
     if request.method not in supported_methods:
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -858,7 +851,6 @@ def interface_details(request):
         except RouterInterface.DoesNotExist:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         res = interface_obj.as_dict()
-        print(res)
         return HttpResponse(json.dumps(res), status=status.HTTP_200_OK)
 
     if request.method == "DELETE":

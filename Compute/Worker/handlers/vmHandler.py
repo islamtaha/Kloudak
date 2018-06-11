@@ -1,15 +1,14 @@
 #!/usr/bin/python3.6
-from lib2 import base
-base.database = '172.17.0.1'
-from .tasks import networkTask, vmNotificationTask
 database = ''
 broker = ''
+from lib2 import base
+base.database = database
+from .tasks import networkTask, vmNotificationTask
 import json
 from lib2.areaOps import area
 from lib2.computeOps import vm
 
 def post(body_dict):
-    ns = [net_dict["name"] for net_dict in body_dict["networks"]]
     try:
         a = area().get(name=body_dict['area'])
         v = a.create_vm(
@@ -44,7 +43,6 @@ def put(body_dict):
 def delete(body_dict):
     try:
         v = vm().get(body_dict['name'], body_dict['owner'])
-        print(v)
         netReq_dict = {}
         netReq_dict['method'] = 'DELETE'
         netReq_dict['vm'] = body_dict['name']
@@ -54,6 +52,5 @@ def delete(body_dict):
         v.delete()
         body_dict['status'] = 'success'
     except Exception as e:
-        print(e)
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)

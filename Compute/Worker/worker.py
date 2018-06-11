@@ -30,6 +30,7 @@ def consumer(ch, method, properties, body):
     t = data['type']
     handler = handler_mapper(t)
     handler.database = conf_dict['database']
+    handler.base.database = conf_dict['database']
     handler.broker = conf_dict['broker']
     base.database = conf_dict['database']
     method = method_mapper(data['method'], handler)

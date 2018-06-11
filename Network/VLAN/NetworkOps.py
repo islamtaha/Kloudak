@@ -65,7 +65,6 @@ class network:
             vlan = next(g)
         except Exception as e:
             #log error
-            print(e)
             raise Exception('no available vids')
         t.update(vlan, {'vlan_available':False})
         n = Network(

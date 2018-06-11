@@ -85,7 +85,6 @@ def body_check(keys=[]):
 					if key not in req_keys:
 						return HttpResponse(f'missing key {key}', status=status.HTTP_400_BAD_REQUEST)
 			except Exception as e:
-				print(e)
 				return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 			return function(*args, **kwargs)
 		return wrapper

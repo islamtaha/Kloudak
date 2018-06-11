@@ -77,13 +77,9 @@ class area(item):
     def _choose_Host(self, cpu, memory):
         host_rpc = HostRpcClient()
         response = host_rpc.call(cpu, memory, self.name) 
-        #print(response)
-        #h = json.loads(response)['name']
         return response
 
     def _choose_Pool(self, size):
         pool_rpc = PoolRpcClient()
         response = pool_rpc.call(size, self.name)
-        #print(response)
-        #p = json.loads(response)['name']
         return response 

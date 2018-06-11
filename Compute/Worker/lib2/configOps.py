@@ -141,9 +141,7 @@ class configIso(object):
             ssh.connect(host, username='root')
         except:
             raise ConnectionFailedException(f'failed to connect to host {host}')
-        print(path)
         cmd1 = f'genisoimage -o {path}/config.iso -volid cidata -joliet -rock {self.ud.path}/user-data {self.md.path}/meta-data'
-        print(cmd1)
         stdin, stdout, stderr = ssh.exec_command(cmd1)
         stdin.close()
         error = stderr.read()
@@ -152,7 +150,6 @@ class configIso(object):
         ssh.close()
         self.ud.delete(host, self.ud.path)
         self.md.delete(host, self.md.path)
-        print(path)
         return f'{path}'
 
 

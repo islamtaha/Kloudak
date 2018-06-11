@@ -82,7 +82,6 @@ class vm(item):
     
     
     def create(self, ip, password, size, template, **kwargs):
-        print('vm create')
         io = dbIO(database)
         a = io.query(Area, area_name=self.p_area.name)[0]
         h = io.query(Host, host_name=self.p_host.name, area_id=a.area_id)[0]
