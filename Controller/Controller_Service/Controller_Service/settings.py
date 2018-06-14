@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ControllerAPI',
     'broker_tasks',
-    'cors'
+    'corsheaders'
 ]
 
 MIDDLEWARE = [

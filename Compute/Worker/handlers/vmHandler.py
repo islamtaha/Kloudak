@@ -5,10 +5,23 @@ from lib2 import base
 base.database = database
 from .tasks import networkTask, vmNotificationTask
 import json
-from lib2.areaOps import area
-from lib2.computeOps import vm
+
+
+def set_config(db, brkr):
+    base.database = db
+    global database
+    global broker
+    database = db
+    broker = brkr
+
+def test():
+    import lib2.areaOps
+    print(lib2.areaOps.database)
+
+
 
 def post(body_dict):
+    from lib2.areaOps import area
     try:
         a = area().get(name=body_dict['area'])
         v = a.create_vm(
@@ -27,9 +40,11 @@ def post(body_dict):
         netReq_dict['networks'] = v.network_map
         netReq_dict['vm'] = body_dict['name']
         netReq_dict['owner'] = body_dict['owner']
+        netReq_dict['type'] = 'vm'
         networkTask(broker, netReq_dict)
         body_dict['status'] = 'success'
     except Exception as e:
+        print(e)
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)
 
@@ -41,6 +56,7 @@ def put(body_dict):
 
 
 def delete(body_dict):
+    from lib2.computeOps import vm
     try:
         v = vm().get(body_dict['name'], body_dict['owner'])
         netReq_dict = {}
@@ -48,6 +64,7 @@ def delete(body_dict):
         netReq_dict['vm'] = body_dict['name']
         netReq_dict['owner'] = body_dict['owner']
         netReq_dict['networks'] = v.network_map
+        netReq_dict['type'] = 'vm'
         networkTask(broker, netReq_dict)
         v.delete()
         body_dict['status'] = 'success'

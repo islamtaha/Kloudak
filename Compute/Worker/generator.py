@@ -5,7 +5,7 @@ channel = connection.channel()
 channel.queue_declare('vm')
 
 pbody = {
-                "method": "DELETE",
+                "method": "POST",
                 "type": "vm",
                 "name": "VM-27",
                 "owner": "Workspace-01",

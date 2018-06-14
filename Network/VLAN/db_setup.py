@@ -2,10 +2,10 @@
 
 from sqlalchemy import create_engine
 from config import get_config
-from orm_schema import base, Area, Host, Network, Vlan, Iface
+from lib.orm_schema import base, Area, Host, Network, Vlan, Iface
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
-from orm_io import dbIO
+from lib.orm_io import dbIO
 
 conf_dict = get_config('conf.json')
 postgres_db = {'drivername': 'postgres',

@@ -1,8 +1,8 @@
 #/usr/bin/python3.6
 
 
-from orm_schema import base, Area, Host
-from orm_io import dbIO
+from lib.orm_schema import base, Area, Host
+from lib.orm_io import dbIO
 from config import get_config
 
 

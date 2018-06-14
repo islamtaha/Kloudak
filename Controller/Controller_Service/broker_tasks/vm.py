@@ -15,7 +15,9 @@ class vmTasks():
 
     def netConfig(self, ipaddr, networks, area):
         self.body['ip'] = ipaddr
-        self.body['networks'] = networks
+        self.body['networks'] = []
+        for n in networks:
+            self.body['networks'].append({'name': n})
         self.body['area'] = area
 
     def hwConfig(self, cpu, ram, disk):

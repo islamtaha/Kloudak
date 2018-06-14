@@ -2,7 +2,6 @@
 import pika
 import json
 from config import get_config
-from lib2 import base
 from handlers import vmHandler
 
 
@@ -29,10 +28,7 @@ def consumer(ch, method, properties, body):
     data = json.loads(body.decode('utf-8'))
     t = data['type']
     handler = handler_mapper(t)
-    handler.database = conf_dict['database']
-    handler.base.database = conf_dict['database']
-    handler.broker = conf_dict['broker']
-    base.database = conf_dict['database']
+    handler.set_config(conf_dict['database'], conf_dict['broker'])
     method = method_mapper(data['method'], handler)
     method(data)
 

@@ -15,6 +15,10 @@ from .exceptions import CreateDirException, DeleteDirException
 from .exceptions import CreateVmException
 
 
+def set_database(db):
+    global database
+    database = db
+
 
 class vm(item):
     def __init__(self, name='', owner='', cpus=0, memory=0, p_pool=None, p_host=None, p_area=None, pi=None, networks=[]):
@@ -41,7 +45,7 @@ class vm(item):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
             ssh.connect(host_ip, username='root')
-        except:
+        except Exception as e:
             raise ConnectionFailedException('failed to connect to host')
         cmd = f"mkdir {dirName}"
         stdin, stdout, stderr = ssh.exec_command(cmd)
@@ -49,6 +53,7 @@ class vm(item):
         ssh.close()
         error = stderr.read()
         if error:
+            print(error)
             raise CreateDirException(f'failed to create directory. {error}')
         return dirName
 
@@ -126,7 +131,7 @@ class vm(item):
                     self.ifaces.append(pvi)
                     map_dict = {}
                     map_dict['name'] = pvi.name
-                    map_dict['host'] = self.p_host.ip
+                    map_dict['host'] = self.p_host.name
                     map_dict['network'] = n
                     map_dict['mac'] = m
                     self.network_map.append(map_dict)
@@ -271,7 +276,7 @@ class vm(item):
                 map_dict['name'] = i.name
                 map_dict['network'] = i.network
                 map_dict['mac'] = i.mac
-                map_dict['host'] = p_host.ip
+                map_dict['host'] = p_host.name
                 res.network_map.append(map_dict)
         return res
 
@@ -285,6 +290,7 @@ class vm(item):
             i.delete()
         v = volume(self, self.p_pool)
         v.delete(self.p_host.ip)
+        #self._deleteDir(self.p_host, self.p_pool.path)
         #configIso().delete(self.p_host.ip, f'{self.p_pool.path}/{self.name}-{self.owner}/')
         io = dbIO(database)
         vm = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)[0]

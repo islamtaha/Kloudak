@@ -1,14 +1,14 @@
 #!/bin/python3.6
 
-from orm_io import dbIO, dbTransaction
-from orm_schema import Network, Vlan, Host, Iface
+from .orm_io import dbIO, dbTransaction
+from .orm_schema import Network, Vlan, Host, Iface
 import paramiko
 
-database = '172.17.0.1'
+database = ''
 
 
 class Interface:
-    def __init__(self, name, network, host, mac):
+    def __init__(self, name='', network=None, host='', mac=''):
         self.name = name
         self.network = network
         self.host = host
@@ -22,10 +22,12 @@ class Interface:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(h.host_ip, username='root')
         cmd1 = f'ovs-vsctl set Port {self.name} tag={n.vlan_id}'
+        print(cmd1)
         stdin, stdout, stderr = ssh.exec_command(cmd1)
         stdin.close()
         e = stderr.read()
         if e:
+            print(e)
             raise Exception(e)
         ssh.close()
         iface = Iface(
@@ -44,7 +46,7 @@ class Interface:
         if len(ifaces) == 0:
             return None
         iface = ifaces[0]
-        h = io.query(Host, host_id=iface.host_id)
+        h = io.query(Host, host_id=iface.host_id)[0]
         return cls(
             name,
             network,
@@ -52,9 +54,14 @@ class Interface:
             iface.iface_mac
         )
 
+    def delete(self):
+        io = dbIO(database)
+        iface = io.query(Iface, iface_name=self.name, iface_mac=self.mac)[0]
+        io.delete([iface])
+
 
 class network:
-    def __init__(self, name, owner):
+    def __init__(self, name='', owner=''):
         self.name = name
         self.owner = owner
 

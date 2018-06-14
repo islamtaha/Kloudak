@@ -1,7 +1,7 @@
 #/usr/bin/python3.6
 
 from sqlalchemy import create_engine, func
-from orm_schema import Area, Host, Network, Iface, Vlan
+from .orm_schema import Area, Host, Network, Iface, Vlan
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 
