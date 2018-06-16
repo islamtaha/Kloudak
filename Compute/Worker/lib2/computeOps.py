@@ -312,6 +312,7 @@ class vm(item):
             raise CreateVmException('failed to create public interface')
         
         network_XML = ''
+        self.network_map = []
         if len(self.ifaces) > 0:
             for iface in self.ifaces:
                 try:

@@ -2,7 +2,7 @@
 import pika
 import json
 from config import get_config
-from handlers import failHandler
+from handlers import failHandler 
 
 conf_file = 'conf.json'
 conf_dict = get_config(conf_file)

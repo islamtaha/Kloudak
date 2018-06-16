@@ -18,4 +18,12 @@ def set_config(db, brkr):
 def recover(body):
     from lib2.areaOps import area
     a = area().get(name=body['area'])
-    a.failHost(body['host'])
+    vms = a.failHost(body['host'])
+    for v in vms:
+        netReq_dict = {}
+        netReq_dict['method'] = 'POST'
+        netReq_dict['networks'] = v.network_map
+        netReq_dict['vm'] = v.name
+        netReq_dict['owner'] = v.owner
+        netReq_dict['type'] = 'vm'
+        networkTask(broker, netReq_dict)

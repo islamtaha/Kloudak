@@ -89,9 +89,12 @@ class area(item):
         io = dbIO(database)
         h = io.query(Host, host_name=hostname)[0]
         vms = io.generatorQuery(VirtualMachine, host_id=h.host_id)
+        vm_list = []
         for vm in vms:
             v = vm().get(name=vm.vm_name, owner=vm.vm_owner)
             h = self._choose_Host(vm.vm_cpu, vm.vm_memory)
             p_host = host().get(name=h, p_area=self)
             v.failHost(p_host)
+            vm_list.append(v)
             time.sleep(3)
+        return vm_list
