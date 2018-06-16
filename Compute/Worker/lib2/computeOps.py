@@ -295,3 +295,89 @@ class vm(item):
         io = dbIO(database)
         vm = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)[0]
         io.delete([vm])
+
+
+    def failRestart(self, new_host):
+        self.p_host = new_host
+        io = dbIO(database)
+        a = io.query(Area, area_name=self.p_area.name)[0]
+        h = io.query(Host, host_name=new_host.name, area_id=a.area_id)[0]
+        v = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)
+        io.update(v, {'state': False, 'host_id': h.host_id})
+        pi = publicIface(self, self.p_host)
+        try:
+            pi.create()
+            self.pi = pi
+        except Exception as e:
+            raise CreateVmException('failed to create public interface')
+        
+        network_XML = ''
+        if len(self.ifaces) > 0:
+            for iface in self.ifaces:
+                try:
+                    m = self._genMacAddr()
+                    pvi = privateIface(self, self.p_host, iface.network, iface.mac)
+                    pvi.create()
+                    self.ifaces.append(pvi)
+                    map_dict = {}
+                    map_dict['name'] = pvi.name
+                    map_dict['host'] = self.p_host.name
+                    map_dict['network'] = iface.network
+                    map_dict['mac'] = m
+                    self.network_map.append(map_dict)
+                    network_XML += f'''<interface type="ethernet">
+            		<mac address="{m}"/>
+            		<target dev="{pvi.name}"/>
+            		</interface>'''
+                except Exception as e:
+                    pi.delete()
+                    if len(self.ifaces) > 0:
+                        for i in self.ifaces:
+                            i.delete()
+                    raise CreateVmException('failed to create private interfaces')
+        vol = io.query(Volume, vm_id=v.vm_id)[0]
+
+        XMLConf = f'''
+		<domain type="kvm">
+		<name>{self.name}-{self.owner}</name>
+		<memory>{self.memory * 1024 *1024}</memory>
+		<currentMemory>{self.memory * 1024 * 1024}</currentMemory>
+		<vcpu>{self.cpus}</vcpu>
+		<os>
+		<type arch="x86_64" machine="pc">hvm</type>
+		</os>
+		<features>
+		<acpi/>
+		<apic/>
+		<pae/>
+		</features>
+		<clock offset="localtime"/>
+		<on_poweroff>destroy</on_poweroff>
+		<on_reboot>destroy</on_reboot>
+		<on_crash>destroy</on_crash>
+		<devices>
+		<disk type="file" device="disk">
+		<source file="{self.p_pool.path}/{self.name}-{self.owner}.img"/>
+		<target dev="hda" bus="ide"/>
+		</disk>
+		<interface type="ethernet">
+		<target dev="{pi.name}"/>
+		</interface>
+		{network_XML}
+		<graphics type="vnc" port="5900" autoport="yes" listen="0.0.0.0"/>
+		</devices>
+		</domain>
+		'''
+        try:
+            conn = libvirt.open(f"qemu+ssh://root@{self.p_host.ip}/system")
+            dom = conn.defineXML(XMLConf)
+            dom.create()
+        except Exception as e:
+            pi.delete()
+            if len(self.ifaces) > 0:
+                for i in self.ifaces:
+                    i.delete()
+            io.delete([v])
+            raise CreateVmException('failed to create vm')
+        conn.close()
+        io.update(v, {'state': True})

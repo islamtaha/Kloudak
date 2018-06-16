@@ -14,11 +14,6 @@ def set_config(db, brkr):
     database = db
     broker = brkr
 
-def test():
-    import lib2.areaOps
-    print(lib2.areaOps.database)
-
-
 
 def post(body_dict):
     from lib2.areaOps import area

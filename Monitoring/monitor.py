@@ -58,12 +58,13 @@ def pool_log(body):
 
 
 def compute_monitor(host):
+    io = dbIO(db)
+    h = io.query(Host, name=host)[0]
+    a = io.query(Area, area_id=h.area_id)[0]
     try:
         conn = libvirt.open(f'qemu+ssh://root@{host}/system')
     except Exception as e:
-        host_failure(host, broker)
-        io = dbIO(db)
-        h = io.query(Host, name=host)[0]
+        host_failure(host, a.area_name, broker)
         io.update(h, {'state': False})
         host_stat = Host_Stats(
             host_name=host,

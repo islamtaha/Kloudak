@@ -12,6 +12,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 from .rpcClient import HostRpcClient, PoolRpcClient
 import json
+import time
 
 
 class area(item):
@@ -83,3 +84,14 @@ class area(item):
         pool_rpc = PoolRpcClient()
         response = pool_rpc.call(size, self.name)
         return response 
+
+    def failHost(self, hostname):
+        io = dbIO(database)
+        h = io.query(Host, host_name=hostname)[0]
+        vms = io.generatorQuery(VirtualMachine, host_id=h.host_id)
+        for vm in vms:
+            v = vm().get(name=vm.vm_name, owner=vm.vm_owner)
+            h = self._choose_Host(vm.vm_cpu, vm.vm_memory)
+            p_host = host().get(name=h, p_area=self)
+            v.failHost(p_host)
+            time.sleep(3)
