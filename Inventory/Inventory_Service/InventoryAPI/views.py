@@ -593,9 +593,11 @@ def workspace(request):
     req_str = request.body.decode(encoding="utf-8", errors="strict")
     if request.method == "GET":
         try:
-            workspaces = Workspace.objects.all()
-            if len(workspaces) == 0:
+            ups = CustomUser.objects.all().filter(user=request.user)
+            #workspaces = Workspace.objects.all()
+            if len(ups) == 0:
                 return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            workspaces = [up.workspace for up in ups]
             dictionaries = json.dumps({'workspaces' : [{'name': obj.__str__()} for obj in workspaces]})
         except Exception as e:
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)

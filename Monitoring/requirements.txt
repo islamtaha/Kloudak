@@ -1,3 +1,3 @@
 sqlalchemy
-libvirt
+libvirt-python
 pika
