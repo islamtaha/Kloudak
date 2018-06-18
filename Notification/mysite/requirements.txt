@@ -1,3 +1,3 @@
 django >= 2.0
-django-channels
-channels_redis
+channels >= 2.0
+channels_redis >= 2.0
