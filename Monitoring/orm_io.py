@@ -22,6 +22,10 @@ class dbIO(object):
         Session = sessionmaker(bind=engine)
         self.session = Session()
 
+    def getAll(self, cl):
+        res = self.session.query(cl).all()
+        return res
+
     def query(self, cl, **kwargs):
         '''parameters:
             - cl > class of sqlalchemy orm

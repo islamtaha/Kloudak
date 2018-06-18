@@ -1,0 +1,15 @@
+1 - run zookeeper server 
+	- put zookeeper configuration files zoo1,zoo2,zoo3 (they are in folder zookeeper_conf in Kloudak-master) in /usr/share/zookeeper-3.4.12/conf/ 
+	- go to /usr/share/zookeeper/bin and run  ($ sudo ./zkServer.sh start /usr/share/zookeeper-3.4.12/conf/zoo1.cfg) to run first server instance
+	- go to /usr/share/zookeeper/bin and run  ($ sudo ./zkServer.sh start /usr/share/zookeeper-3.4.12/conf/zoo2.cfg) to run second server instance
+	- go to /usr/share/zookeeper/bin and run  ($ sudo ./zkServer.sh start /usr/share/zookeeper-3.4.12/conf/zoo3.cfg) to run third server instance
+	- go to /usr/share/zookeeper/bin and run  ($ sudo ./zkCli.sh -server localhost:2181,localhost:2182,localhost:2183)
+
+2 - run celery tasks
+	- go to Kloudak-master/Monitoring/ (the file tasks there contain the task to be run in celery) and run ($ celery -A tasks worker --loglevel=info --hostname=h1 )as first instance of celery
+	- go to Kloudak-master/Monitoring/ and run ($ celery -A tasks worker --loglevel=info --hostname=h2 )as second instance of celery
+
+3 - run monitor.py run it 2-3 times
+	- go to Kloudak-master/Monitoring/ and run ($ python3.6 monitor.py )
+	- go to Kloudak-master/Monitoring/ and run ($ python3.6 monitor.py )
+
