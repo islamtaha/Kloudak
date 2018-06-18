@@ -58,7 +58,8 @@ class routerRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task to network queue
-            task = router.routerTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = router.routerTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.update(
                 new_name=self.new_name
                 )
@@ -78,7 +79,8 @@ class routerRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task
-            task = router.routerTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = router.routerTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.delete()
             url = self.inv_addr + self.owner + '/routers/' + self.name + '/'
             del_req = api_call(method='delete', url=url)
@@ -94,10 +96,12 @@ class routerRequest(object):
         if code != 404:
             return HttpResponse(status=status.HTTP_409_CONFLICT)
         #dispatch task
+        t = self.log_task()
         task = router.routerTasks(
                     name=self.name,
                     owner=self.owner,
-                    broker=self.broker
+                    broker=self.broker,
+                    task_id=t.id
                     )
         task.create()
         body = {"name": self.name, "state": "C"}
@@ -122,3 +126,4 @@ class routerRequest(object):
             username=username
 	        )
         t.save()
+        return t

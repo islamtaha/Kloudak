@@ -3,12 +3,13 @@ import json
 
 class networkTasks():
     '''tasks published to network queue on rabbitMQ broker'''
-    def __init__(self, name, owner, broker="localhost", description=""):
+    def __init__(self, name, owner, broker="localhost", description="", task_id=0):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='network')
         self.description = description
         self.body = {}
+        self.body['id'] = task_id
         self.body['name'] = name
         self.body['owner'] = owner
         self.body['type'] = 'network'

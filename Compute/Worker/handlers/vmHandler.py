@@ -31,6 +31,8 @@ def post(body_dict):
             template = body_dict["template"]
         )
         netReq_dict = {}
+        if 'id' in body_dict.keys():
+            netReq_dict['id'] = body_dict['id']
         netReq_dict['method'] = 'POST'
         netReq_dict['networks'] = v.network_map
         netReq_dict['vm'] = body_dict['name']
@@ -55,6 +57,8 @@ def delete(body_dict):
     try:
         v = vm().get(body_dict['name'], body_dict['owner'])
         netReq_dict = {}
+        if 'id' in body_dict.keys():
+            netReq_dict['id'] = body_dict['id']
         netReq_dict['method'] = 'DELETE'
         netReq_dict['vm'] = body_dict['name']
         netReq_dict['owner'] = body_dict['owner']

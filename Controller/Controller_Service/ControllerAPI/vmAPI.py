@@ -61,7 +61,8 @@ class vmRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task to vm queue
-            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.update(
                 new_name=self.new_name, 
                 new_description=self.new_description,
@@ -85,7 +86,8 @@ class vmRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task to vm queue
-            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.delete()
             url = self.inv_addr + self.owner + '/vms/' + self.name + '/'
             del_req = api_call(method='delete', url=url)
@@ -133,7 +135,8 @@ class vmRequest(object):
         self.ip = self._get_ip()
         self._get_template_details()
         #dispatch task
-        task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker)
+        t = self.log_task()
+        task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
         task.netConfig(
                 ipaddr=self.ip, 
                 networks=self.networks,
@@ -175,3 +178,4 @@ class vmRequest(object):
             username=username
 	        )
         t.save()
+        return t

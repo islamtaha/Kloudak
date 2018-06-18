@@ -26,7 +26,7 @@ def vms(request):
         res = req.process_request()
     except MissingKeyException as e:
         return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-    req.log_task()
+    #req.log_task()
     return res
 
 
@@ -40,7 +40,7 @@ def networks(request):
         res = req.process_request()
     except MissingKeyException as e:
         return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-    req.log_task()
+    #req.log_task()
     return res
 
 
@@ -54,7 +54,7 @@ def routers(request):
         res = req.process_request()
     except MissingKeyException as e:
         return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-    req.log_task()
+    #req.log_task()
     return res
 
 
@@ -68,7 +68,7 @@ def interfaces(request):
         res = req.process_request()
     except MissingKeyException as e:
         return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-    req.log_task()
+    #req.log_task()
     return res
 
 

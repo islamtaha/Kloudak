@@ -28,6 +28,7 @@ def delete(body):
     except Exception as e:
         #log task
         body['status'] = 'failed'
+    body['type'] = 'vm'
     networkNotificationTask(broker, body)
 
 
@@ -42,4 +43,5 @@ def post(body):
     except Exception as e:
         #log task
         body['status'] = 'failed'
+    body['type'] = 'vm'
     networkNotificationTask(broker, body)

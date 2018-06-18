@@ -12,6 +12,7 @@ class ControllerapiConfig(AppConfig):
             text += line
         conf_dict = json.loads(text)
         self.inv_addr = conf_dict['inventory']
+        self.notif_addr = conf_dict['notification']
         self.broker = conf_dict['broker']
         self.retries = conf_dict['retries']
         self.wait = conf_dict['wait']

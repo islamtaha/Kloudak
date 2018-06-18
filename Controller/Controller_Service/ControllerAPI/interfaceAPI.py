@@ -72,10 +72,12 @@ class interfaceRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task to network queue
+            t = self.log_task()
             task = interface.interfaceTasks(network=self.network, 
                 owner=self.owner, 
                 broker=self.broker,
-                router=self.router
+                router=self.router,
+                task_id=t.id
             )
             task.update(
                 new_ip=self.new_ip
@@ -99,11 +101,13 @@ class interfaceRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task
+            t = self.log_task()
             task = interface.interfaceTasks(
                 network=self.network,
                 router=self.router, 
                 owner=self.owner, 
-                broker=self.broker
+                broker=self.broker,
+                task_id=t.id
                 )
             task.delete()
             url = self.inv_addr + self.owner + '/routers/' + self.router + '/interfaces/' + self.network + '/'
@@ -124,11 +128,13 @@ class interfaceRequest(object):
         if code == 200:
             return HttpResponse(status=status.HTTP_409_CONFLICT)
         #dispatch task
+        t = self.log_task()
         task = interface.interfaceTasks(
                     router=self.router,
                     owner=self.owner,
                     broker=self.broker,
-                    network=self.network
+                    network=self.network,
+                    task_id=t.id
                     )
         task.create(ip=self.ip)
         body = {"network": self.network, "ip": self.ip}
@@ -153,3 +159,4 @@ class interfaceRequest(object):
             username=username
 	        )
         t.save()
+        return t

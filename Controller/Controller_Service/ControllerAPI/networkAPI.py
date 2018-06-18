@@ -60,10 +60,11 @@ class networkRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task to network queue
-            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.update(
                 new_name=self.new_name, 
-                new_description=self.new_description,
+                new_description=self.new_description
                 )
             body = {
                 'name': self.update_dict['name'],
@@ -82,7 +83,8 @@ class networkRequest(object):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         if code == 200:
             #publish task
-            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker)
+            t = self.log_task()
+            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
             task.delete()
             url = self.inv_addr + self.owner + '/networks/' + self.name + '/'
             del_req = api_call(method='delete', url=url)
@@ -104,11 +106,13 @@ class networkRequest(object):
         if code != 404:
             return HttpResponse(status=status.HTTP_409_CONFLICT)
         #dispatch task
+        t = self.log_task()
         task = network.networkTasks(
                     name=self.name,
                     owner=self.owner,
                     description = self.description,
-                    broker=self.broker
+                    broker=self.broker,
+                    task_id=t.id
                     )
         task.create()
         body = {"name": self.name, "description": self.description, "state": "C"}
@@ -133,3 +137,4 @@ class networkRequest(object):
             username=username
 	        )
         t.save()
+        return t

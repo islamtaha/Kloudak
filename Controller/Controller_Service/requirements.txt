@@ -6,3 +6,4 @@ django-rest-framework
 pika
 requests
 django-cors-headers
+python-daemon

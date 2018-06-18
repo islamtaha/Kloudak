@@ -14,6 +14,7 @@ class networkTask(models.Model):
     method = models.CharField(max_length=20, choices=methods)
     task = models.TextField()
     username = models.CharField(max_length=200)
+    failed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -24,11 +25,14 @@ class networkTask(models.Model):
     def as_dict(self):
         actions = {"POST": "create", "PUT": "update", "DELETE": "delete"}
         return {
+            "id": self.id,
             "owner": self.owner,
-            "time": self.created,
+            "time": str(self.created),
             "name": self.objectName,
             "action": actions[self.method],
-            "type": "network"
+            "type": "network",
+            "finished": self.finished,
+            "failed": self.failed
         }
 
 
@@ -44,6 +48,7 @@ class vmTask(models.Model):
     method = models.CharField(max_length=20, choices=methods)
     task = models.TextField()
     username = models.CharField(max_length=200)
+    failed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -54,11 +59,16 @@ class vmTask(models.Model):
     def as_dict(self):
         actions = {"POST": "create", "PUT": "update", "DELETE": "delete"}
         return {
+            "id": self.id,
             "owner": self.owner,
             "time": str(self.created),
             "name": self.objectName,
             "action": actions[self.method],
-            "type": "vm"
+            "netConf": self.netConf,
+            "vmConf": self.vmConf,
+            "type": "vm",
+            "finished": self.finished,
+            "failed": self.failed
         }
 
 
@@ -72,6 +82,7 @@ class routerTask(models.Model):
     method = models.CharField(max_length=20, choices=methods)
     task = models.TextField()
     username = models.CharField(max_length=200)
+    failed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -82,11 +93,14 @@ class routerTask(models.Model):
     def as_dict(self):
         actions = {"POST": "create", "PUT": "update", "DELETE": "delete"}
         return {
+            "id": self.id,
             "owner": self.owner,
             "time": str(self.created),
             "name": self.objectName,
             "action": actions[self.method],
-            "type": "router"
+            "type": "router",
+            "finished": self.finished,
+            "failed": self.failed
         }
 
 
@@ -100,6 +114,7 @@ class interfaceTask(models.Model):
     method = models.CharField(max_length=20, choices=methods)
     task = models.TextField()
     username = models.CharField(max_length=200)
+    failed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -111,10 +126,13 @@ class interfaceTask(models.Model):
         router = json.loads(self.task)["router"]
         actions = {"POST": "create", "PUT": "update", "DELETE": "delete"}
         return {
+            "id": self.id,
             "owner": self.owner,
             "time": str(self.created),
             "router": router,
             "network": self.objectNetwork,
             "action": actions[self.method],
-            "type": "interface"
+            "type": "interface",
+            "finished": self.finished,
+            "failed": self.failed
         }
