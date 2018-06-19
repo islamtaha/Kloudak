@@ -281,20 +281,47 @@ class vm(item):
         return res
 
     def delete(self):
+        errFlag_pi = False
+        err_Flag_pvi = False
+        errFlag_vol = False
+        errFlag_dom = False
+        errFlag_db = False
         con = libvirt.open(f'qemu+ssh://root@{self.p_host.ip}/system')
         dom = con.lookupByName(f'{self.name}-{self.owner}')
-        dom.destroy()
-        dom.undefine()
-        self.pi.delete()
+        if dom:
+            dom.destroy()
+            dom.undefine()
+        else:
+            errFlag_dom = True
+        try:
+            self.pi.delete()
+        except:
+            errFlag_pi = True
         for i in self.ifaces:
-            i.delete()
+            try:
+                i.delete()
+            except:
+                err_Flag_pvi = True
         v = volume(self, self.p_pool)
-        v.delete(self.p_host.ip)
+        try:
+            v.delete(self.p_host.ip)
+        except:
+            errFlag_vol = True
         #self._deleteDir(self.p_host, self.p_pool.path)
         #configIso().delete(self.p_host.ip, f'{self.p_pool.path}/{self.name}-{self.owner}/')
         io = dbIO(database)
-        vm = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)[0]
+        try:
+            vm = io.query(VirtualMachine, vm_name=self.name, vm_owner=self.owner)[0]
+        except:
+            errFlag_db = True
         io.delete([vm])
+        return {
+            'pi': errFlag_pi,
+            'pvi': err_Flag_pvi,
+            'dom': errFlag_dom,
+            'vol': errFlag_vol,
+            'db': errFlag_db
+        }
 
 
     def failRestart(self, new_host):

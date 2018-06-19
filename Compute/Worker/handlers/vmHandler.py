@@ -65,8 +65,12 @@ def delete(body_dict):
             netReq_dict['networks'] = v.network_map
             netReq_dict['type'] = 'vm'
             networkTask(broker, netReq_dict)
-        v.delete()
+        flag_dict = v.delete()
         body_dict['status'] = 'success'
+        for val in flag_dict.values():
+            if val:
+                body_dict['status'] = 'failed'
+                break
     except Exception as e:
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)
