@@ -38,7 +38,7 @@ def consumer(ch, method, properties, body):
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=conf_dict['broker']))
     channel = connection.channel()
-    channel.queue_declare(queue='vm')
+    channel.queue_declare(queue='network')
     print("handling connection")
     channel.basic_consume(consumer, queue='network', no_ack=False)
     channel.start_consuming()

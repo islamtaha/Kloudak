@@ -63,7 +63,7 @@ def pool_log(body):
 
 @app.task
 def compute_monitor(host):
-    io = dbIO(db)
+   ''' io = dbIO(db)
     h = io.query(Host, name=host)[0]
     a = io.query(Area, area_id=h.area_id)[0]
     try:
@@ -99,12 +99,12 @@ def compute_monitor(host):
                 dom_body['user_time'] = stats[0]['user_time']
                 dom_body['memory_stats'] = dom.memoryStats()
                 dom_log(dom_body)
-    conn.close()
+    conn.close()'''
 
 
 @app.task
 def pool_monitor(host):
-    conn = libvirt.open(f'qemu+ssh://root@{host}/system')
+    '''conn = libvirt.open(f'qemu+ssh://root@{host}/system')
     pools = conn.listAllStoragePools()
     if len(pools) > 0:
         pool_body = {}
@@ -114,4 +114,4 @@ def pool_monitor(host):
             pool_body['size'] = info[1] / (1024 * 1024 * 1024)
             pool_body['free_size'] = info[3] / (1024 * 1024 * 1024)
             pool_log(pool_body)
-    conn.close()
+    conn.close()'''
