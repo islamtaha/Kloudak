@@ -3,7 +3,7 @@ import json
 
 class routerTasks():
     '''tasks published to network queue on rabbitMQ broker'''
-    def __init__(self, name, owner, broker="localhost", task_id=0):
+    def __init__(self, name, owner, broker="localhost", task_id=0, retries=0):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='network')
@@ -12,6 +12,7 @@ class routerTasks():
         self.body['name'] = name
         self.body['owner'] = owner
         self.body['type'] = 'router'
+        self.body['retries'] = retries
         
     def create(self):
         '''generates a task in json format structured as:

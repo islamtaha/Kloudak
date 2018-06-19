@@ -4,7 +4,7 @@ import json
 
 class vmTasks():
     '''tasks published to vm queue on rabbitMQ broker'''
-    def __init__(self, name, owner, broker, task_id=0):
+    def __init__(self, name, owner, broker, task_id=0, retries=0):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='vm')
@@ -13,6 +13,7 @@ class vmTasks():
         self.body['name'] = name
         self.body['owner'] = owner
         self.body['type'] = 'vm'
+        self.body['retries'] = retries
 
     def netConfig(self, ipaddr, networks, area):
         self.body['ip'] = ipaddr

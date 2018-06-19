@@ -14,12 +14,13 @@ class networkRequest(object):
         - process_request function returns the appropriate HttpResult object
         - raises MissingKeyException
     '''
-    def __init__(self, request, inv_addr, broker):
+    def __init__(self, request, inv_addr, broker, retries=0):
         self.request = request
         self.method = self.request.method
         self.body = {}
         self.inv_addr = inv_addr
         self.broker = broker
+        self.retries = retries
 
 
     def process_request(self):
@@ -61,7 +62,7 @@ class networkRequest(object):
         if code == 200:
             #publish task to network queue
             t = self.log_task()
-            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
+            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id, retries=self.retries)
             task.update(
                 new_name=self.new_name, 
                 new_description=self.new_description
@@ -84,7 +85,7 @@ class networkRequest(object):
         if code == 200:
             #publish task
             t = self.log_task()
-            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
+            task = network.networkTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id, retries=self.retries)
             task.delete()
             url = self.inv_addr + self.owner + '/networks/' + self.name + '/'
             del_req = api_call(method='delete', url=url)
@@ -112,7 +113,8 @@ class networkRequest(object):
                     owner=self.owner,
                     description = self.description,
                     broker=self.broker,
-                    task_id=t.id
+                    task_id=t.id,
+                    retries=self.retries
                     )
         task.create()
         body = {"name": self.name, "description": self.description, "state": "C"}
@@ -129,11 +131,14 @@ class networkRequest(object):
         token = self.request.META['HTTP_TOKEN']
         token_dict = jwt.decode(token.encode('utf-8'), "SECRET_KEY", algorithm='HS256')
         username = token_dict['username']
+        task_dict = self.req_dict
+        task_dict['retries'] = self.retries
+        task_str = json.dumps(task_dict)
         t = networkTask(
 		    owner=self.owner,
 		    method=self.method,
 		    objectName=self.name,
-		    task=self.req_str,
+		    task=task_str,
             username=username
 	        )
         t.save()

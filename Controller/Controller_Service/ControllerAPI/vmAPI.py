@@ -14,12 +14,13 @@ class vmRequest(object):
         - process_request function returns the appropriate HttpResult object
         - raises MissingKeyException, Exception 
     '''
-    def __init__(self, request, inv_addr, broker):
+    def __init__(self, request, inv_addr, broker, retries=0):
         self.request = request
         self.method = self.request.method
         self.body = {}
         self.inv_addr = inv_addr
         self.broker = broker
+        self.retries = retries
 
 
     def process_request(self):
@@ -62,7 +63,7 @@ class vmRequest(object):
         if code == 200:
             #publish task to vm queue
             t = self.log_task()
-            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
+            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id, retries=self.retries)
             task.update(
                 new_name=self.new_name, 
                 new_description=self.new_description,
@@ -87,7 +88,7 @@ class vmRequest(object):
         if code == 200:
             #publish task to vm queue
             t = self.log_task()
-            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
+            task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id, retries=self.retries)
             task.delete()
             url = self.inv_addr + self.owner + '/vms/' + self.name + '/'
             del_req = api_call(method='delete', url=url)
@@ -136,7 +137,7 @@ class vmRequest(object):
         self._get_template_details()
         #dispatch task
         t = self.log_task()
-        task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id)
+        task = vm.vmTasks(name=self.name, owner=self.owner, broker=self.broker, task_id=t.id, retries=self.retries)
         task.netConfig(
                 ipaddr=self.ip, 
                 networks=self.networks,
@@ -157,7 +158,7 @@ class vmRequest(object):
         body['area'] = self.area
         body['template'] = self.temp_name
         body['networks'] = self.networks
-        body['state'] = "C_D"
+        body['state'] = "U"
         url = self.inv_addr + self.owner + '/vms/'
         api_call(method='post', url=url, body=json.dumps(body))
         res_dict = json.loads(self.req_str)
@@ -170,11 +171,14 @@ class vmRequest(object):
         token = self.request.META['HTTP_TOKEN']
         token_dict = jwt.decode(token.encode('utf-8'), "SECRET_KEY", algorithm='HS256')
         username = token_dict['username']
+        task_dict = self.req_dict
+        task_dict['retries'] = self.retries
+        task_str = json.dumps(task_dict)
         t = vmTask(
 		    owner=self.owner,
 		    method=self.method,
 		    objectName=self.name,
-		    task=self.req_str,
+		    task=task_str,
             username=username
 	        )
         t.save()

@@ -15,13 +15,14 @@ import json
 appConfig = apps.get_app_config('ControllerAPI')
 inv_addr = appConfig.inv_addr
 broker = appConfig.broker
+retries = appConfig.retries
 
 @csrf_exempt
 @supported_methods(['POST', 'PUT', 'DELETE'])
 @body_check(['name', 'owner'])
 @check_permissions('vm')
 def vms(request):
-    req = vmRequest(request, inv_addr, broker)
+    req = vmRequest(request, inv_addr, broker, retries)
     try:
         res = req.process_request()
     except MissingKeyException as e:
@@ -35,7 +36,7 @@ def vms(request):
 @body_check(['name', 'owner'])
 @check_permissions('network')
 def networks(request):
-    req = networkRequest(request, inv_addr, broker)
+    req = networkRequest(request, inv_addr, broker, retries)
     try:
         res = req.process_request()
     except MissingKeyException as e:
@@ -49,7 +50,7 @@ def networks(request):
 @body_check(['name', 'owner'])
 @check_permissions('router')
 def routers(request):
-    req = routerRequest(request, inv_addr, broker)
+    req = routerRequest(request, inv_addr, broker, retries)
     try:
         res = req.process_request()
     except MissingKeyException as e:
@@ -63,7 +64,7 @@ def routers(request):
 @body_check(['network', 'owner', 'router'])
 @check_permissions('router')
 def interfaces(request):
-    req = interfaceRequest(request, inv_addr, broker)
+    req = interfaceRequest(request, inv_addr, broker, retries)
     try:
         res = req.process_request()
     except MissingKeyException as e:

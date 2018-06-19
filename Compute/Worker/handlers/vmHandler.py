@@ -30,18 +30,18 @@ def post(body_dict):
             password = body_dict["password"],
             template = body_dict["template"]
         )
-        netReq_dict = {}
-        if 'id' in body_dict.keys():
+        if 'status' not in body_dict.keys():
+            netReq_dict = {}
+            netReq_dict['retries'] = body_dict['retries']
             netReq_dict['id'] = body_dict['id']
-        netReq_dict['method'] = 'POST'
-        netReq_dict['networks'] = v.network_map
-        netReq_dict['vm'] = body_dict['name']
-        netReq_dict['owner'] = body_dict['owner']
-        netReq_dict['type'] = 'vm'
-        networkTask(broker, netReq_dict)
+            netReq_dict['method'] = 'POST'
+            netReq_dict['networks'] = v.network_map
+            netReq_dict['vm'] = body_dict['name']
+            netReq_dict['owner'] = body_dict['owner']
+            netReq_dict['type'] = 'vm'
+            networkTask(broker, netReq_dict)
         body_dict['status'] = 'success'
     except Exception as e:
-        print(e)
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)
 
@@ -56,15 +56,15 @@ def delete(body_dict):
     from lib2.computeOps import vm
     try:
         v = vm().get(body_dict['name'], body_dict['owner'])
-        netReq_dict = {}
-        if 'id' in body_dict.keys():
+        if 'status' not in body_dict.keys():
+            netReq_dict = {}
             netReq_dict['id'] = body_dict['id']
-        netReq_dict['method'] = 'DELETE'
-        netReq_dict['vm'] = body_dict['name']
-        netReq_dict['owner'] = body_dict['owner']
-        netReq_dict['networks'] = v.network_map
-        netReq_dict['type'] = 'vm'
-        networkTask(broker, netReq_dict)
+            netReq_dict['method'] = 'DELETE'
+            netReq_dict['vm'] = body_dict['name']
+            netReq_dict['owner'] = body_dict['owner']
+            netReq_dict['networks'] = v.network_map
+            netReq_dict['type'] = 'vm'
+            networkTask(broker, netReq_dict)
         v.delete()
         body_dict['status'] = 'success'
     except Exception as e:

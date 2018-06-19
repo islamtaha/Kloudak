@@ -14,12 +14,13 @@ class interfaceRequest(object):
         - process_request function returns the appropriate HttpResult object
         - raises MissingKeyException
     '''
-    def __init__(self, request, inv_addr, broker):
+    def __init__(self, request, inv_addr, broker, retries=0):
         self.request = request
         self.method = self.request.method
         self.body = {}
         self.inv_addr = inv_addr
         self.broker = broker
+        self.retries = retries
 
 
     def process_request(self):
@@ -77,7 +78,8 @@ class interfaceRequest(object):
                 owner=self.owner, 
                 broker=self.broker,
                 router=self.router,
-                task_id=t.id
+                task_id=t.id,
+                retries=self.retries
             )
             task.update(
                 new_ip=self.new_ip
@@ -107,7 +109,8 @@ class interfaceRequest(object):
                 router=self.router, 
                 owner=self.owner, 
                 broker=self.broker,
-                task_id=t.id
+                task_id=t.id,
+                retries=self.retries
                 )
             task.delete()
             url = self.inv_addr + self.owner + '/routers/' + self.router + '/interfaces/' + self.network + '/'
@@ -134,7 +137,8 @@ class interfaceRequest(object):
                     owner=self.owner,
                     broker=self.broker,
                     network=self.network,
-                    task_id=t.id
+                    task_id=t.id,
+                    retries=self.retries
                     )
         task.create(ip=self.ip)
         body = {"network": self.network, "ip": self.ip}
@@ -151,11 +155,14 @@ class interfaceRequest(object):
         token = self.request.META['HTTP_TOKEN']
         token_dict = jwt.decode(token.encode('utf-8'), "SECRET_KEY", algorithm='HS256')
         username = token_dict['username']
+        task_dict = self.req_dict
+        task_dict['retries'] = self.retries
+        task_str = json.dumps(task_dict)
         t = interfaceTask(
 		    owner=self.owner,
 		    method=self.method,
 		    objectNetwork=self.network,
-		    task=self.req_str,
+		    task=task_str,
             username=username
 	        )
         t.save()

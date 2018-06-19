@@ -64,24 +64,28 @@ def choose_Pool(size, area):
 
 
 def host_request(ch, method, props, body):
+    print(body)
     body_dict = json.loads(body.decode('utf-8'))
     h = choose_Host(body_dict['cpu'], body_dict['memory'], body_dict['area'])
     response = {'name': h.host_name, 'ip': h.host_ip}
     jres = json.dumps(response)
     ch.basic_publish(exchange='',
-    routing_key=pika.BasicProperties(correlation_id=props.correlation_id),
+    routing_key=props.reply_to,
+    properties=pika.BasicProperties(correlation_id=props.correlation_id),
     body=jres
     )
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def pool_request(ch, method, props, body):
+    print(body)
     body_dict = json.loads(body.decode('utf-8'))
     p = choose_Pool(body_dict['size'], body_dict['area'])
     response = {'name': p.pool_name}
     jres = json.dumps(response)
     ch.basic_publish(exchange='',
-    routing_key=pika.BasicProperties(correlation_id=props.correlation_id),
+    routing_key=props.reply_to,
+    properties=pika.BasicProperties(correlation_id=props.correlation_id),
     body=jres
     )
     ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -106,8 +110,8 @@ def poolThread():
 
 
 def main():
-    hThread = Thread(target=hostThread, daemon=True)
-    pThread = Thread(target=poolThread, daemon=True)
+    hThread = Thread(target=hostThread, daemon=False)
+    pThread = Thread(target=poolThread, daemon=False)
     hThread.start()
     pThread.start()
     hThread.join()
