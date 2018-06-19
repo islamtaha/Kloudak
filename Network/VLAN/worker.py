@@ -40,7 +40,7 @@ def main():
     channel = connection.channel()
     channel.queue_declare(queue='vm')
     print("handling connection")
-    channel.basic_consume(consumer, queue='network', no_ack=True)
+    channel.basic_consume(consumer, queue='network', no_ack=False)
     channel.start_consuming()
 
 
