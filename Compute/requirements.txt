@@ -1,0 +1,4 @@
+libvirt-python
+pika
+paramiko
+sqlalchemy

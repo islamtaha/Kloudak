@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^networks/$', views.networks),
     url(r'^routers/$', views.routers),
     url(r'^interfaces/$', views.interfaces),
-    url(r'^running-tasks/.*/$', views.running_tasks),
-    url(r'^finished-tasks/.*/$', views.finished_tasks),
+    url(r'^running_tasks/.*/$', views.running_tasks),
+    url(r'^finished_tasks/.*/$', views.finished_tasks),
     url(r'^tasks/.*/$', views.tasks),
 ]

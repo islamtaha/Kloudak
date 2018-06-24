@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+{% load static %}
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <title>Kloudak - Beta Version</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+Power Template
+http://www.templatemo.com/tm-508-power
+-->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
+  <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl-carousel.css' %}">
+
+  <script src="{% static 'js/vendor/modernizr-2.6.1-respond-1.1.0.min.js' %}"></script>
+</head>
+
+<body>
+
+  <div class="site-main" id="sTop">
+    <div class="site-header">
+      <div class="main-header">
+        <div class="container">
+          <div id="menu-wrapper">
+            <div class="row">
+              <nav class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                  <button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>
+                  <a href="#top" class="navbar-brand">Kloudak</a>
+                  <div id="main-nav" class="collapse navbar-collapse">
+                    <ul class="menu-first nav navbar-nav" style="margin-right: 20px;">
+                      <li class="active"><a href="#">Home</a></li>
+                      <li><a href="#about">About Us</a></li>
+
+                    </ul>
+                  </div>
+                  <!-- /.main-menu -->
+                </div>
+              </nav>
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- /#menu-wrapper -->
+        </div>
+        <!-- /.container -->
+      </div>
+      <!-- /.main-header -->
+    </div>
+    <!-- /.site-header -->
+  </div>
+  <!-- /.site-main -->
+
+
+  <div class="banner">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="banner-content">
+            <h6>Clouding Made Simple</h6>
+            <h2>Enterprise &amp; Individuals Platform</h2>
+            <ul class="buttons">
+              <li>
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#LoginModal">Login</button>
+              </li>
+              <li>
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#SignUpModal">Sign Up</button>
+              </li>
+
+            </ul>
+
+
+
+
+            <!-- Trigger the modal with a button -->
+
+
+            <!-- Modal -->
+            <div id="LoginModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Login</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form action="http://localhost:5000/login/" method="POST">
+
+                      <div class="imgcontainer">
+                        <img src="{% static 'img/User_Avatar.png' %}" alt="Avatar" class="avatar">
+                      </div>
+
+                      <div class="forma_container">
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="username" required>
+
+                        <label for="password"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="password" required>
+
+                        <button type="submit" class="btn btn-info btn-lg">Login</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <div id="SignUpModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Sign Up</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    <form action="http://localhost:5000/signup/" method="POST">
+
+                      <div class="imgcontainer">
+                        <img src="{% static 'img/User_Avatar.png' %}" alt="Avatar" class="avatar">
+                      </div>
+
+                      <div class="forma_container">
+                        <label for="email"><b>Email</b></label>
+                        <input type="text" placeholder="Enter Your Email" name="email" required>
+
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" placeholder="Choose Username" name="username" required>
+
+                        <label for="password"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="password" required>
+
+                        <button type="submit" class="btn btn-danger btn-lg">Sign Up</button>
+                        <!-- <label>
+      <input type="checkbox" checked="checked" name="remember"> Remember me
+    </label> -->
+                      </div>
+
+
+
+                    </form>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="intro">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>API Documentation</h4>
+          <h6>Easy to use RESTful APIs</h6>
+          <div class="border-button"><a href="{% static 'APIs/InventoryAPI.pdf' %}" target="new">Our Inventory</a> <a href="{% static 'APIs/ControllerAPI.pdf' %}" target="new">Controller</a> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <section id="about" class="page-section">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="service-item first-service">
+            <div class="icon">
+              <img src="{% static 'img/first-service-icon.png' %}" alt="">
+            </div>
+            <h4>Servers</h4>
+            <p>Linux based IaaS &amp; PaaS.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="service-item second-service">
+            <div class="icon">
+              <img src="{% static 'img/second-service-icon.png' %}" alt="">
+            </div>
+            <h4>Networks</h4>
+            <p>Private networks.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="service-item third-service">
+            <div class="icon">
+              <img src="{% static 'img/third-service-icon.png' %}" alt="">
+            </div>
+            <h4>Routers</h4>
+            <p>Distributed routing between private networks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="second-tabs-content what-we-do">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-heading">
+            <h4>Available Linux flavors</h4>
+            <p>We support a wide variety of Linux distros.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="wrapper">
+          <div class="col-md-12">
+            <div class="row">
+              <ul class="tabs clearfix" data-tabgroup="second-tab-group">
+                <li class="col-md-4 col-sm-12 col-xs-12">
+                  <a href="#unique" class="active">
+                    <div class="list-item">
+                      <div class="icon">
+                        <img src="{% static 'img/centos.png' %}" alt="">
+                      </div>
+                      <h4>CentOS</h4>
+                    </div>
+                  </a>
+                </li>
+                <li class="col-md-4 col-sm-12 col-xs-12">
+                  <a href="#theme">
+                    <div class="list-item">
+                      <div class="icon">
+                        <img src="{% static 'img/fedora.png' %}" alt="">
+                      </div>
+                      <h4>Fedora</h4>
+                    </div>
+                  </a>
+                </li>
+                <li class="col-md-4 col-sm-12 col-xs-12">
+                  <a href="#translation">
+                    <div class="list-item">
+                      <div class="icon">
+                        <img src="{% static 'img/ubuntu.png' %}" alt="">
+                      </div>
+                      <h4>Ubuntu</h4>
+                    </div>
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <p>Copyright &copy; 2018 Kloudak </p><br>
+
+        </div>
+        <div class="col-md-4 col-sm-12">
+
+        </div>
+        <div class="col-md-2 col-md-offset-2 col-sm-12">
+          <div class="back-to-top">
+            <a href="#top">
+                                <i class="fa fa-angle-up"></i>
+                                back to top
+                            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/vendor/jquery-1.11.0.min.js' %}"></script>
+  <script>
+    window.jQuery || document.write('<script src="{% static '
+      js / vendor / jquery - 1.11 .0.min.js ' %}"><\/script>')
+  </script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+  <script src="{% static 'js/plugins.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <!-- Google Map -->
+  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script src="{% static 'js/vendor/jquery.gmap3.min.js' %}"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      // mobile nav toggle
+      $('#nav-toggle').on('click', function(event) {
+        event.preventDefault();
+        $('#main-nav').toggleClass("open");
+      });
+    });
+  </script>
+
+  <!-- templatemo 406 flex -->
+</body>
+
+</html>

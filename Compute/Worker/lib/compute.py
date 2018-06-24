@@ -9,11 +9,11 @@ import random, uuid
 
 class vm(object):
 	def __init__(self, name, owner, pool, id_num, cpu=0, ram=0, **kwargs):
-		'''
+		"""
 		- required parameters > name(str), owner(str), pool(str), id_num(int) (used with all methods)
 		- optional parameters > cpu(int)core, ram(int)GB, disk(int)GB, networks[] (used when creating a new vm)
 		- networks > used when deleting a vm
-		'''
+		"""
 		self.name = f'{name}-{owner}'
 		self.owner = owner
 		self.id_num = id_num
@@ -85,7 +85,7 @@ class vm(object):
 
 
 	def create(self, host, password, ifname, ip, hostname, gw, template, path, key=''):
-		'''"path" parameter is the path where the storage pool is mounted ('mypool').
+		""""path" parameter is the path where the storage pool is mounted ('mypool').
 			parameters are:
 				- host > ip address (str) with prefix of the host (ex:'192.168.1.50/24')
 				- password > password of the cloud image user
@@ -96,7 +96,7 @@ class vm(object):
 				- template > name of the cloud image template to be used
 				- path > the path where the storage pool is mounted ('mypool')
 				- key > public key to be added to trusted keys of the vm (optional)
-		'''
+		"""
 		try:
 			p = self._createDir(host, path)
 		except:
@@ -272,10 +272,10 @@ class vm(object):
 		return self.v_uuid
 
 	def delete(self, host, path=''):
-		'''parameters:
+		"""parameters:
 			- host > ip address (str) of the host hypervisor
 			- path > path where the storage pool is mounted
-		'''
+		"""
 		conn = libvirt.open(f'qemu+ssh://root@{host}/system')
 		dom = conn.lookupByName(self.name)
 		dom.destroy()

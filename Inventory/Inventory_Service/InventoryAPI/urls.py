@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^get_token/$', views.get_token),
     url(r'^signup/$', views.signup),
     url(r'^login/$', views.userlogin),
+    url(r'^logout/$', views.userlogout),
     url(r'^.*/users/$', views.UserProfiles),
     url(r'^.*/users/.*/$', views.UserProfile_Details),
     url(r'^.*/vms/$', views.vms),

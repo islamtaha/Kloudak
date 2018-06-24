@@ -1,14 +1,17 @@
 #!/usr/bin/python3.6
-
 from lib2.orm_schema import Host, Area, Pool, Template
 from lib2.base import dbIO
-
-#t = Template(
-#    template_name='Template-01',
-#    template_path='/home/maged/ISOs/',
-#    template_ifname='eth0'
-#)
 io = dbIO('localhost')
+a = Area(
+    area_name='Area-01',
+    area_gw='10.10.10.1'
+)
+io.add([a])
+t = Template(
+    template_name='Template-01',
+    template_path='/home/maged/ISOs/',
+    template_ifname='eth0'
+)
 a = io.query(Area, area_name='Area-01')[0]
 h1 = Host(
     host_name='kvm-1',
@@ -41,11 +44,7 @@ io.add([p1])
 #t = io.query(Template, template_name='Template-01')[0]
 #path = '/home/maged/ISOs/Fedora-Cloud-Base-27-1.6.x86_64.raw'
 #io.update(t, {'template_path': path})
-# a = Area(
-#     area_name='Area-01',
-#     area_gw='10.10.10.1'
-# )
-# io.add([a])
+
 # a = io.query(Area, area_name='Area-01')[0]
 # h = Host(
 #     host_name='localhost',

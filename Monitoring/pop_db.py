@@ -4,10 +4,10 @@ from orm_schema import Host, Area, Pool
 from orm_io import dbIO
 
 io = dbIO('localhost')
-#a = Area(
-#    area_name='Area-01'
-#)
-#io.add([a])
+a = Area(
+    area_name='Area-01'
+)
+io.add([a])
 a = io.query(Area, area_name='Area-01')[0]
 h1 = Host(
     host_name='kvm-1',

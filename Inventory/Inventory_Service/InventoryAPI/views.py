@@ -41,42 +41,43 @@ def signup(request):
         except Exception as e:
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         login(request, newuser)
-        return HttpResponse(status=status.HTTP_201_CREATED)
+        res = redirect('http://localhost:5000/kloudak/workspaces/')
+        return res
+        #return HttpResponse(status=status.HTTP_201_CREATED)
 
 @csrf_exempt
 def userlogin(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        userprofiles = CustomUser.objects.all().filter(user=user)
-        userpermissions = {}
-        for up in userprofiles:
-            userpermissions[up.workspace.name] = up.as_dict()
-        userpermissions['username'] = user.username
-        if user:
-            login(request, user)
-            jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
-            res = redirect('http://localhost:5000/workspaces/')
-            res['token'] = jwt_token['token']
-            return res
-            response = HttpResponse(json.dumps(jwt_token), status=status.HTTP_200_OK)
-            response['token'] = jwt_token['token']
-            return response
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
+            userprofiles = CustomUser.objects.all().filter(user=user)
+            userpermissions = {}
+            for up in userprofiles:
+                userpermissions[up.workspace.name] = up.as_dict()
+            userpermissions['username'] = user.username
+            if user:
+                login(request, user)
+                jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
+                res = redirect('http://localhost:5000/kloudak/workspaces/')
+                res['token'] = jwt_token['token']
+                return res
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return redirect('http://localhost:5000/kloudak/index/')
 
 
 @csrf_exempt
 def userlogout(request):
     try:
-        logout(request.user)
-    except:
-        pass
-    return HttpResponse(status=status.HTTP_200_OK)
+        logout(request)
+    except Exception as e:
+        print(e)
+    return redirect('http://localhost:5000/kloudak/index/')
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def UserProfiles(request):
     supported_methods = ["GET", "POST"]
@@ -103,8 +104,9 @@ def UserProfiles(request):
         req_str = request.body.decode(encoding="utf-8", errors="strict")
         try:
             req_dict = json.loads(req_str)
+            print(req_dict['username'])
             userProfile = CustomUser(
-                user=User.objects.get(username=req_dict['name']),
+                user=User.objects.get(username=req_dict['username']),
                 workspace=workspace,
                 vm_can_add=req_dict['vm_can_add'],
                 vm_can_edit=req_dict['vm_can_edit'],
@@ -121,12 +123,12 @@ def UserProfiles(request):
             )
             userProfile.save()
         except Exception as e:
+            print(e)
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse(req_str, status=status.HTTP_201_CREATED)
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def UserProfile_Details(request):
     supported_methods = ['GET', 'PUT', 'DELETE']
@@ -379,7 +381,6 @@ def network_details(request):
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def areas(request):
     supported_methods = ["GET", "POST"]
@@ -413,7 +414,6 @@ def areas(request):
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def area_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]
@@ -494,7 +494,6 @@ def area_get_ip(request):
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def templates(request):
     supported_methods = ["GET", "POST"]
@@ -502,9 +501,11 @@ def templates(request):
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     if request.method == "GET":
+        print('here in GET')
         try:
             temps = VMTemplate.objects.all()
         except Exception as e:
+            print(e)
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         if len(temps) == 0:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
@@ -533,7 +534,6 @@ def templates(request):
 
 
 @csrf_exempt
-@admin_validate
 @set_token
 def template_details(request):
     supported_methods = ["GET", "DELETE", "PUT"]
@@ -584,13 +584,13 @@ def template_details(request):
 
 @csrf_exempt
 @login_required
-@set_token
 def workspace(request):
     supported_methods = ["GET", "POST"]
     if request.method not in supported_methods:
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     req_str = request.body.decode(encoding="utf-8", errors="strict")
+    print(request.body)
     if request.method == "GET":
         try:
             ups = CustomUser.objects.all().filter(user=request.user)
@@ -608,6 +608,7 @@ def workspace(request):
             req_dict = json.loads(req_str)
             workspace_name = req_dict["name"]
         except Exception as e:
+            print(e)
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         new_workspace = Workspace(name=workspace_name)
         new_workspace.save()

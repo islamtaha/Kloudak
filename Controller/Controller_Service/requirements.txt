@@ -7,3 +7,4 @@ pika
 requests
 django-cors-headers
 python-daemon
+websocket-client

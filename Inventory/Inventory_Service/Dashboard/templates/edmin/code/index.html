@@ -1,0 +1,555 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ workspace }}</title>
+  <link type="text/css" href="{% static 'edmin/code/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link type="text/css" href="{% static 'edmin/code/bootstrap/css/bootstrap-responsive.min.css' %}" rel="stylesheet">
+  <link type="text/css" href="{% static 'edmin/code/css/theme.css' %}" rel="stylesheet">
+  <link type="text/css" href="{% static 'edmin/code/images/icons/css/font-awesome.css' %}" rel="stylesheet">
+  <link type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
+  <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl-carousel.css' %}">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    var token
+    var areas
+    var templates
+    var vRunning_tasks
+    var nRunning_tasks
+    var table = document.getElementById("tasks")
+    $.ajax({
+      url: "http://localhost:5000/get_token/",
+      type: "GET",
+      async: false,
+      cache: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        token = obj['token']
+        console.log(token)
+      }
+    });
+
+    $.ajax({
+      url: "http://localhost:5000/areas/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        areas = obj.areas
+        for (item of obj.areas) {
+          console.log(item.name)
+        }
+      }
+    });
+    $.ajax({
+      url: "http://localhost:5000/templates/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        templates = obj.templates
+        for (item of obj.templates) {
+          console.log(item.name)
+        }
+      }
+    });
+    $.ajax({
+      url: "http://localhost:8000/running_tasks/{{ workspace }}/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        vRunning_tasks = obj.vm_tasks
+        nRunning_tasks = obj.network_tasks
+        for (item of obj.vm_tasks) {
+          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
+            <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+            <td class="cell-title">\n\
+              <div>' + item.action + ' ' + item.name +
+            '</div>\n\
+            </td>\n\
+            <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+            <td class="cell-time align-right">' + item.time +
+            '</td>\n\
+            <td class="cell-time align-right">' + item.finished + '</td>\n\
+            <td class="cell-time align-right">' + item.failed + '</td>\n\
+          </tr>'
+          $("#tasksTable tbody").append(html);
+        }
+        for (item of obj.network_tasks) {
+          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
+            <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+            <td class="cell-title">\n\
+              <div>' + item.action + ' ' + item.name +
+            '</div>\n\
+            </td>\n\
+            <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+            <td class="cell-time align-right">' + item.time +
+            '</td>\n\
+            <td class="cell-time align-right">' + item.finished + '</td>\n\
+            <td class="cell-time align-right">' + item.failed + '</td>\n\
+          </tr>'
+          $('#tasksTable tbody').append(html);
+        }
+      }
+    });
+
+
+    $(document).ready(function() {
+      $('#networks').click(function(event) {
+        console.log(token)
+        event.preventDefault();
+        $.ajax({
+          url: "http://localhost:5000/{{ workspace }}/networks/",
+          type: "GET",
+          headers: {
+            'token': token
+          },
+          success: function(data) {
+            console.log(data)
+            var obj = JSON.parse(data)
+            var networks = obj.networks
+            for (item of obj.networks) {
+              console.log(item.name)
+            }
+          }
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+                        <i class="icon-reorder shaded"></i></a><a class="brand" href="#">{{ workspace }} </a>
+        <div class="nav-collapse collapse navbar-inverse-collapse">
+          <ul class="nav pull-right">
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ username }}
+                                <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="http://localhost:5000/logout/">Logout</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#newWSModal">Create Workspace</a></li>
+                <li class="divider"></li>
+              </ul>
+            </li>
+            <li class="nav-user dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Workspace
+                                <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Add User</a></li>
+                <li><a href="#">Delete Workspace</a></li>
+                <li class="divider"></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- /.nav-collapse -->
+      </div>
+    </div>
+    <!-- /navbar-inner -->
+  </div>
+  <!-- /navbar -->
+  <div class="wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <div class="sidebar">
+            <ul class="widget widget-menu unstyled">
+              <li><a href="task.html">Tasks <b class="label orange pull-right">
+                                    19</b> </a></li>
+            </ul>
+            <ul class="widget widget-menu unstyled">
+              <li class="active"><a href="index.html">Virtual Machines
+                                </a></li>
+              <li><a id="networks" href="#">Networks
+              </a></li>
+              <li><a href="task.html">Users
+                                                                            </a></li>
+            </ul>
+            <!--/.widget-nav-->
+            <ul class="widget widget-menu unstyled">
+              <li><a href="#">Templates</a></li>
+              <li><a href="#">Areas</a></li>
+              {% if workspaces %}
+              <li><a class="collapsed" data-toggle="collapse" href="#togglePages"><i class="menu-icon icon-cog">
+                                </i><i class="icon-chevron-down pull-right"></i><i class="icon-chevron-up pull-right">
+                                </i>More Workspaces </a>
+                <ul id="togglePages" class="collapse unstyled">
+                  {% for ws in workspaces %}
+                  <li><a href="http://localhost:5000/kloudak/workspaces/{{ ws }}/"><i class="icon-inbox"></i>{{ ws }} </a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% endif %}
+              <li><a href="http://localhost:5000/logout/"><i class="menu-icon icon-signout"></i>Logout </a></li>
+            </ul>
+          </div>
+          <!--/.sidebar-->
+        </div>
+        <!--/.span3-->
+        <div class="span9">
+          <div class="content">
+            <div class="btn-controls">
+              <div class="btn-box-row row-fluid">
+                <a href="#" class="btn-box big span4" data-toggle="modal" data-target="#newVmModal"><i class="icon-plus"></i>
+                    <p class="text-muted">
+                        Virtual Machine</p>
+                </a><a href="#" class="btn-box big span4" data-toggle="modal" data-target="#newUserModal"><i class="icon-plus"></i>
+                                        <p class="text-muted">
+                                            User</p>
+                                    </a><a href="#" class="btn-box big span4" data-toggle="modal" data-target="#newNetModal"><i class="icon-plus"></i>
+                                        <p class="text-muted">
+                                            Network</p>
+                                    </a>
+              </div>
+              <div class="btn-box-row row-fluid">
+              </div>
+
+            </div>
+
+            <!--/.module-->
+
+            <!--/.module-->
+          </div>
+          <!--/.content-->
+        </div>
+
+
+        <div class="span9">
+          <div class="content">
+
+            <div class="module message">
+              <div class="module-head">
+                <h3>Recent Tasks</h3>
+              </div>
+              <div class="module-option clearfix">
+                <div class="pull-left">
+                  Filter : &nbsp;
+                  <div class="btn-group">
+                    <button class="btn">All</button>
+                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">All</a></li>
+                      <li><a href="#">In Progress</a></li>
+                      <li><a href="#">Done</a></li>
+                      <li class="divider"></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="module-body table">
+
+                <table id="tasksTable" class="table table-message">
+                  <tbody>
+                    <tr class="heading">
+                      <td class="cell-icon"></td>
+                      <td class="cell-title">Task</td>
+                      <td class="cell-status hidden-phone hidden-tablet">Status</td>
+                      <td class="cell-time align-right">Time Started</td>
+                      <td class="cell-time align-right">Finished</td>
+                      <td class="cell-time align-right">Failed</td>
+                    </tr>
+                    <tr class="task">
+                      <td class="cell-icon"><i class="icon-checker high"></i></td>
+                      <td class="cell-title">
+                        <div>Create vm task</div>
+                      </td>
+                      <td class="cell-status hidden-phone hidden-tablet"><b class="due">VM</b></td>
+                      <td class="cell-time align-right">Just Now</td>
+                      <td class="cell-time align-right">No</td>
+                      <td class="cell-time align-right">No</td>
+                    </tr>
+                    <tr class="task">
+                      <td class="cell-icon"><i class="icon-checker"></i></td>
+                      <td class="cell-title">
+                        <div>delete network task</div>
+                      </td>
+                      <td class="cell-status hidden-phone hidden-tablet"><b class="due">Network</b></td>
+                      <td class="cell-time align-right">Just Now</td>
+                      <td class="cell-time align-right">No</td>
+                      <td class="cell-time align-right">No</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+
+              </div>
+              <div class="module-foot">
+              </div>
+            </div>
+
+          </div>
+          <!--/.content-->
+        </div>
+
+
+
+        <!--/.span9-->
+      </div>
+    </div>
+    <!--/.container-->
+  </div>
+  <!--/.wrapper-->
+  <div class="footer">
+    <div class="container">
+      <b class="copyright">&copy; 2018 Kloudak - MU </b>All rights reserved.
+    </div>
+  </div>
+  <script src="{% static 'edmin/code/scripts/jquery-1.9.1.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/scripts/jquery-ui-1.10.1.custom.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/scripts/flot/jquery.flot.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/scripts/flot/jquery.flot.resize.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/scripts/datatables/jquery.dataTables.js' %}" type="text/javascript"></script>
+  <script src="{% static 'edmin/code/scripts/common.js' %}" type="text/javascript"></script>
+
+
+
+  <!-- modals -->
+  <div id="newNetModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create Network</h4>
+        </div>
+        <div class="modal-body">
+          <form id="newNetForm" method="POST">
+            <div class="forma_container">
+              <label for="name"><b>Name</b></label>
+              <input id="netName" type="text" placeholder="Enter Network Name" name="name" required>
+              <label for="description"><b>Description</b></label>
+              <input id="netDescription" type="text" placeholder="Enter Description" name="description" required>
+              <button type="submit" class="btn btn-info btn-lg">Create</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="newVmModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create VM</h4>
+        </div>
+        <div class="modal-body">
+          <form id="newVmForm" method="POST">
+            <div class="forma_container">
+              <label for="name"><b>Name</b></label>
+              <input id="vmName" type="text" placeholder="Enter VM Name" name="name" required>
+              <label for="description"><b>Description</b></label>
+              <input id="vmDescription" type="text" placeholder="Enter Description" name="description" required>
+              <label for="Template"><b>Choose Template</b></label>
+              <select  id="vmTemplate" name="template">
+                <option value="Template-01.raw">Template-01.raw</option>
+              </select>
+              <label for="Area"><b>Choose Area</b></label>
+              <select id="vmArea" name="area">
+                <option value="Area-01">Area-01</option>
+              </select>
+              <label for="Template"><b>Choose Networks</b></label>
+              <select id="vmNetworks" multiple name="networks">
+                <option value="MagNet">MagNet</option>
+                <option value="Network-01">Network-01</option>
+              </select>
+              <label for="password"><b>Password</b></label>
+              <input id="vmPassword" type="password" name="password" required>
+              <button type="submit" class="btn btn-info btn-lg">Create</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="newUserModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add User</h4>
+        </div>
+        <div class="modal-body">
+          <form id="newUserForm" method="POST">
+            <div class="forma_container">
+              <label for="username"><b>Name</b></label>
+              <input id="userUsername" type="text" placeholder="Enter Username" name="username" required>
+              <label for="username"><b>Permissions</b></label>
+              <input id="vmAdd" type="checkbox" name="can_add_vm" value="VM">Add VMs<br>
+              <input id="vmEdit" type="checkbox" name="can_edit_vm" value="VM">Edit VMs<br>
+              <input id="vmDelete" type="checkbox" name="can_delete_vm" value="VM">Delete VMs<br>
+              <input id="netAdd" type="checkbox" name="can_add_network" value="Network">Add Networks<br>
+              <input id="netEdit" type="checkbox" name="can_edit_network" value="Network">Edit Networks<br>
+              <input id="netDelete" type="checkbox" name="can_delete_network" value="Network">Delete Networks<br>
+              <input id="userAdd" type="checkbox" name="can_add_user" value="User">Add Users<br>
+              <input id="userEdit" type="checkbox" name="can_edit_user" value="User">Edit Users<br>
+              <input id="userDelete" type="checkbox" name="can_delete_user" value="User">Delete Users<br>
+              <button type="submit" class="btn btn-info btn-lg">Add</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="newWSModal" class="modal fade" role="dialog" style="display: none">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title">New Workspace</h4>
+              </div>
+              <div class="modal-body">
+          <form id="newWSForm" method="POST">
+            <div class="forma_container">
+              <label for="name"><b>Name</b></label>
+              <input id="wsName" type="text" placeholder="Enter Workspace Name" name="name" required>
+              <button type="submit" class="btn btn-info btn-lg">Create</button>
+            </div>
+          </form>
+              </div>
+
+      </div>
+  </div>
+
+<script type="text/javascript">
+$("#newWSForm").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:5000/workspaces/",
+        data: JSON.stringify({'name': `${$('#wsName').val()}`}),
+        success: function(response, satuts, jqXHR){
+            alert('ok');
+            location.href = `http://localhost:5000/kloudak/workspaces/${$('#wsName').val()}/`
+        }
+    });
+});
+</script>
+
+<script type="text/javascript">
+$("#newNetForm").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:8000/networks/",
+        headers: {
+          'token': token
+        },
+        data: JSON.stringify({'owner': '{{workspace}}', 'name': `${$('#netName').val()}`, 'description': `${$('#netDescription').val()}`}),
+        success: function(response, satuts, jqXHR){
+            alert('ok');
+        }
+    });
+});
+</script>
+
+<script type="text/javascript">
+$("#newVmForm").submit(function(e) {
+    e.preventDefault();
+    var Nets = []
+    $("#vmNetworks > option").each(function() {
+    Nets.push(`${this.value}`)
+});
+    alert(Nets)
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:8000/vms/",
+        headers: {
+          'token': token
+        },
+        data: JSON.stringify({'owner': '{{workspace}}',
+         'name': `${$('#vmName').val()}`,
+         'description': `${$('#vmDescription').val()}`,
+         'template': `${$('#vmTemplate').val()}`,
+         'area': `${$('#vmArea').val()}`,
+         'password': `${$('#vmPassword').val()}`,
+         'networks': Nets
+       }),
+        success: function(response, satuts, jqXHR){
+            alert('ok');
+        }
+    });
+});
+</script>
+
+
+<script type="text/javascript">
+$("#newUserForm").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:5000/{{ workspace }}/users/",
+        headers: {
+          'token': token
+        },
+        data: JSON.stringify({'owner': '{{workspace}}',
+         'username': `${$('#userUsername').val()}`,
+         'vm_can_add': $("#vmAdd").is(":checked"),
+         'vm_can_edit': $("#vmEdit").is(":checked"),
+         'vm_can_delete': $("#vmDelete").is(":checked"),
+         'network_can_add': $("#netAdd").is(":checked"),
+         'network_can_edit': $("#netEdit").is(":checked"),
+         'network_can_delete': $("#netDelete").is(":checked"),
+         'user_can_add': $("#userAdd").is(":checked"),
+         'user_can_edit': $("#userEdit").is(":checked"),
+         'user_can_delete': $("#userDelete").is(":checked"),
+         'router_can_add': false,
+         'router_can_edit': false,
+         'router_can_delete': false
+       }),
+        success: function(response, satuts, jqXHR){
+            alert('ok');
+        }
+    });
+});
+</script>
+
+
+</body>
+
+</html>

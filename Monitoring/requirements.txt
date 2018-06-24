@@ -1,0 +1,5 @@
+libvirt-python
+pika
+kazoo
+sqlalchemy
+celery

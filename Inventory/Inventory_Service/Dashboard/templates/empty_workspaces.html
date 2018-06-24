@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Workspace</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css ">
+
+</head>
+<body>
+<div id="myModal" class="modal show">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">You are not part of a workspace</h4>
+            </div>
+            <div class="modal-body">
+				<p>Create a new workspace.</p>
+                <form id="newWS" method="post">
+                    <div class="form-group">
+                        <input id="wsName" name="name" type="name" class="form-control" placeholder="Name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $("#newWS").submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                method: "POST",
+                url: "http://localhost:5000/workspaces/",
+                data: JSON.stringify({'name': `${$('#wsName').val()}`}),
+                success: function(response, satuts, jqXHR){
+                    alert('ok');
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

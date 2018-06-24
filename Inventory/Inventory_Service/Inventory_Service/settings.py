@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'InventoryAPI',
     'django_extensions',
     'corsheaders',
+    'Dashboard',
 ]
 
 MIDDLEWARE = [
@@ -132,8 +133,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )
+}
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
 }
