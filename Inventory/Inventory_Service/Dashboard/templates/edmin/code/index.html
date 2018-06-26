@@ -20,122 +20,6 @@
   <link rel="stylesheet" href="{% static 'css/owl-carousel.css' %}">
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script type="text/javascript">
-    var token
-    var areas
-    var templates
-    var vRunning_tasks
-    var nRunning_tasks
-    var table = document.getElementById("tasks")
-    $.ajax({
-      url: "http://localhost:5000/get_token/",
-      type: "GET",
-      async: false,
-      cache: false,
-      success: function(data) {
-        var obj = JSON.parse(data)
-        token = obj['token']
-        console.log(token)
-      }
-    });
-
-    $.ajax({
-      url: "http://localhost:5000/areas/",
-      type: "GET",
-      headers: {
-        'token': token
-      },
-      async: false,
-      success: function(data) {
-        var obj = JSON.parse(data)
-        areas = obj.areas
-        for (item of obj.areas) {
-          console.log(item.name)
-        }
-      }
-    });
-    $.ajax({
-      url: "http://localhost:5000/templates/",
-      type: "GET",
-      headers: {
-        'token': token
-      },
-      async: false,
-      success: function(data) {
-        var obj = JSON.parse(data)
-        templates = obj.templates
-        for (item of obj.templates) {
-          console.log(item.name)
-        }
-      }
-    });
-    $.ajax({
-      url: "http://localhost:8000/running_tasks/{{ workspace }}/",
-      type: "GET",
-      headers: {
-        'token': token
-      },
-      async: false,
-      success: function(data) {
-        var obj = JSON.parse(data)
-        vRunning_tasks = obj.vm_tasks
-        nRunning_tasks = obj.network_tasks
-        for (item of obj.vm_tasks) {
-          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
-            <td class="cell-icon"><i class="icon-checker"></i></td>\n\
-            <td class="cell-title">\n\
-              <div>' + item.action + ' ' + item.name +
-            '</div>\n\
-            </td>\n\
-            <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
-            <td class="cell-time align-right">' + item.time +
-            '</td>\n\
-            <td class="cell-time align-right">' + item.finished + '</td>\n\
-            <td class="cell-time align-right">' + item.failed + '</td>\n\
-          </tr>'
-          $("#tasksTable tbody").append(html);
-        }
-        for (item of obj.network_tasks) {
-          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
-            <td class="cell-icon"><i class="icon-checker"></i></td>\n\
-            <td class="cell-title">\n\
-              <div>' + item.action + ' ' + item.name +
-            '</div>\n\
-            </td>\n\
-            <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
-            <td class="cell-time align-right">' + item.time +
-            '</td>\n\
-            <td class="cell-time align-right">' + item.finished + '</td>\n\
-            <td class="cell-time align-right">' + item.failed + '</td>\n\
-          </tr>'
-          $('#tasksTable tbody').append(html);
-        }
-      }
-    });
-
-
-    $(document).ready(function() {
-      $('#networks').click(function(event) {
-        console.log(token)
-        event.preventDefault();
-        $.ajax({
-          url: "http://localhost:5000/{{ workspace }}/networks/",
-          type: "GET",
-          headers: {
-            'token': token
-          },
-          success: function(data) {
-            console.log(data)
-            var obj = JSON.parse(data)
-            var networks = obj.networks
-            for (item of obj.networks) {
-              console.log(item.name)
-            }
-          }
-        });
-      });
-    });
-  </script>
 </head>
 
 <body>
@@ -184,15 +68,13 @@
         <div class="span3">
           <div class="sidebar">
             <ul class="widget widget-menu unstyled">
-              <li><a href="task.html">Tasks <b class="label orange pull-right">
-                                    19</b> </a></li>
             </ul>
             <ul class="widget widget-menu unstyled">
-              <li class="active"><a href="index.html">Virtual Machines
+              <li class="active"><a id="vms" href="#">Virtual Machines
                                 </a></li>
               <li><a id="networks" href="#">Networks
               </a></li>
-              <li><a href="task.html">Users
+              <li><a href="#">Users
                                                                             </a></li>
             </ul>
             <!--/.widget-nav-->
@@ -220,7 +102,7 @@
           <div class="content">
             <div class="btn-controls">
               <div class="btn-box-row row-fluid">
-                <a href="#" class="btn-box big span4" data-toggle="modal" data-target="#newVmModal"><i class="icon-plus"></i>
+                <a id="newVmAnchor" href="#" class="btn-box big span4" data-toggle="modal" data-target="#newVmModal"><i class="icon-plus"></i>
                     <p class="text-muted">
                         Virtual Machine</p>
                 </a><a href="#" class="btn-box big span4" data-toggle="modal" data-target="#newUserModal"><i class="icon-plus"></i>
@@ -249,7 +131,8 @@
 
             <div class="module message">
               <div class="module-head">
-                <h3>Recent Tasks</h3>
+                <h3>Recent Tasks  <b id="tNumber" class="label orange pull-right">
+                                      19</b> </h3>
               </div>
               <div class="module-option clearfix">
                 <div class="pull-left">
@@ -273,33 +156,13 @@
                 <table id="tasksTable" class="table table-message">
                   <tbody>
                     <tr class="heading">
-                      <td class="cell-icon"></td>
-                      <td class="cell-title">Task</td>
-                      <td class="cell-status hidden-phone hidden-tablet">Status</td>
-                      <td class="cell-time align-right">Time Started</td>
-                      <td class="cell-time align-right">Finished</td>
-                      <td class="cell-time align-right">Failed</td>
-                    </tr>
-                    <tr class="task">
-                      <td class="cell-icon"><i class="icon-checker high"></i></td>
-                      <td class="cell-title">
-                        <div>Create vm task</div>
-                      </td>
-                      <td class="cell-status hidden-phone hidden-tablet"><b class="due">VM</b></td>
-                      <td class="cell-time align-right">Just Now</td>
-                      <td class="cell-time align-right">No</td>
-                      <td class="cell-time align-right">No</td>
-                    </tr>
-                    <tr class="task">
-                      <td class="cell-icon"><i class="icon-checker"></i></td>
-                      <td class="cell-title">
-                        <div>delete network task</div>
-                      </td>
-                      <td class="cell-status hidden-phone hidden-tablet"><b class="due">Network</b></td>
-                      <td class="cell-time align-right">Just Now</td>
-                      <td class="cell-time align-right">No</td>
-                      <td class="cell-time align-right">No</td>
-                    </tr>
+                              <td class="cell-icon"></td>
+                              <td class="cell-title">Task</td>
+                              <td class="cell-status hidden-phone hidden-tablet">Type</td>
+                              <td class="cell-time align-right">Time</td>
+                              <td class="cell-time align-right">Finished</td>
+                              <td class="cell-time align-right">Failed</td>
+                            </tr>
                   </tbody>
                 </table>
 
@@ -378,17 +241,21 @@
               <label for="description"><b>Description</b></label>
               <input id="vmDescription" type="text" placeholder="Enter Description" name="description" required>
               <label for="Template"><b>Choose Template</b></label>
-              <select  id="vmTemplate" name="template">
-                <option value="Template-01.raw">Template-01.raw</option>
+              <select id="vmTemplate" name="template">
               </select>
+
+              <table id="templateDetails" class="table table-message">
+                <tbody>
+                </tbody>
+              </table>
+
+
+
               <label for="Area"><b>Choose Area</b></label>
               <select id="vmArea" name="area">
-                <option value="Area-01">Area-01</option>
               </select>
-              <label for="Template"><b>Choose Networks</b></label>
+              <label for="Networks"><b>Choose Networks</b></label>
               <select id="vmNetworks" multiple name="networks">
-                <option value="MagNet">MagNet</option>
-                <option value="Network-01">Network-01</option>
               </select>
               <label for="password"><b>Password</b></label>
               <input id="vmPassword" type="password" name="password" required>
@@ -438,114 +305,374 @@
   </div>
 
   <div id="newWSModal" class="modal fade" role="dialog" style="display: none">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">New Workspace</h4>
-              </div>
-              <div class="modal-body">
-          <form id="newWSForm" method="POST">
-            <div class="forma_container">
-              <label for="name"><b>Name</b></label>
-              <input id="wsName" type="text" placeholder="Enter Workspace Name" name="name" required>
-              <button type="submit" class="btn btn-info btn-lg">Create</button>
-            </div>
-          </form>
-              </div>
-
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">New Workspace</h4>
       </div>
+      <div class="modal-body">
+        <form id="newWSForm" method="POST">
+          <div class="forma_container">
+            <label for="name"><b>Name</b></label>
+            <input id="wsName" type="text" placeholder="Enter Workspace Name" name="name" required>
+            <button type="submit" class="btn btn-info btn-lg">Create</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
   </div>
 
-<script type="text/javascript">
-$("#newWSForm").submit(function(e) {
-    e.preventDefault();
+
+  <script type="text/javascript">
+    var token
+    var areas
+    var templates
+    var vRunning_tasks
+    var nRunning_tasks
+    var allNetworks
+    var table = document.getElementById("tasks")
     $.ajax({
+      url: "http://localhost:5000/get_token/",
+      type: "GET",
+      async: false,
+      cache: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        token = obj['token']
+      }
+    });
+
+    $.ajax({
+      url: "http://localhost:5000/areas/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        areas = obj.areas
+        for (item of obj.areas) {
+          var x = document.getElementById("vmArea");
+          var option = document.createElement("option");
+          option.text = item.name;
+          option.value = item.name;
+          x.add(option);
+          x.selectedIndex = -1;
+        }
+      }
+    });
+    $.ajax({
+      url: "http://localhost:5000/templates/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        templates = obj.templates
+        for (item of obj.templates) {
+          var x = document.getElementById("vmTemplate");
+          var option = document.createElement("option");
+          option.text = item.name;
+          option.value = item.name;
+          x.add(option);
+          x.selectedIndex = -1;
+        }
+      }
+    });
+
+    $('#networks').click(function(event) {
+      event.preventDefault();
+      $.ajax({
+        url: "http://localhost:5000/{{ workspace }}/networks/",
+        type: "GET",
+        headers: {
+          'token': token
+        },
+        success: function(data) {
+          var obj = JSON.parse(data)
+          var networks = obj.networks
+          for (item of obj.networks) {
+            console.log(item.name)
+          }
+        }
+      });
+    });
+
+
+    $('#newVmAnchor').click(function(event) {
+      event.preventDefault();
+      $.ajax({
+        url: "http://localhost:5000/{{ workspace }}/networks/",
+        type: "GET",
+        headers: {
+          'token': token
+        },
+        success: function(data) {
+          var obj = JSON.parse(data)
+          allNetworks = obj.networks
+          for (item of obj.networks) {
+            var x = document.getElementById("vmNetworks")
+            var opt = document.createElement("option")
+            opt.text = item.name;
+            opt.value = item.name;
+            x.add(opt)
+            console.log(item.name)
+            x.selectedIndex = -1;
+          }
+        }
+      });
+    });
+
+
+    $('#vms').click(function(event) {
+      event.preventDefault();
+      $.ajax({
+        url: "http://localhost:5000/{{ workspace }}/vms/",
+        type: "GET",
+        headers: {
+          'token': token
+        },
+        success: function(data) {
+          var obj = JSON.parse(data)
+          var vms = obj.vms
+          for (item of obj.vms) {
+            console.log(item.name)
+          }
+        }
+      });
+    });
+  </script>
+
+
+
+  <script type="text/javascript">
+    $("#newWSForm").submit(function(e) {
+      e.preventDefault();
+      $.ajax({
         method: "POST",
         url: "http://localhost:5000/workspaces/",
-        data: JSON.stringify({'name': `${$('#wsName').val()}`}),
-        success: function(response, satuts, jqXHR){
-            alert('ok');
-            location.href = `http://localhost:5000/kloudak/workspaces/${$('#wsName').val()}/`
+        data: JSON.stringify({
+          'name': `${$('#wsName').val()}`
+        }),
+        success: function(response, satuts, jqXHR) {
+          alert('ok');
+          location.href = `http://localhost:5000/kloudak/workspaces/${$('#wsName').val()}/`
         }
+      });
     });
-});
-</script>
+  </script>
 
-<script type="text/javascript">
-$("#newNetForm").submit(function(e) {
-    e.preventDefault();
-    $.ajax({
+  <script type="text/javascript">
+    $("#newNetForm").submit(function(e) {
+      e.preventDefault();
+      $.ajax({
         method: "POST",
         url: "http://localhost:8000/networks/",
         headers: {
           'token': token
         },
-        data: JSON.stringify({'owner': '{{workspace}}', 'name': `${$('#netName').val()}`, 'description': `${$('#netDescription').val()}`}),
-        success: function(response, satuts, jqXHR){
-            alert('ok');
+        data: JSON.stringify({
+          'owner': '{{workspace}}',
+          'name': `${$('#netName').val()}`,
+          'description': `${$('#netDescription').val()}`
+        }),
+        success: function(response, satuts, jqXHR) {
+          alert('ok');
         }
+      });
     });
-});
-</script>
+  </script>
 
-<script type="text/javascript">
-$("#newVmForm").submit(function(e) {
-    e.preventDefault();
-    var Nets = []
-    $("#vmNetworks > option").each(function() {
-    Nets.push(`${this.value}`)
-});
-    alert(Nets)
-    $.ajax({
+  <script type="text/javascript">
+    $("#newVmForm").submit(function(e) {
+      e.preventDefault();
+      var Nets = []
+      $("#vmNetworks > option").each(function() {
+        Nets.push(`${this.value}`)
+      });
+      alert(Nets)
+      $.ajax({
         method: "POST",
         url: "http://localhost:8000/vms/",
         headers: {
           'token': token
         },
-        data: JSON.stringify({'owner': '{{workspace}}',
-         'name': `${$('#vmName').val()}`,
-         'description': `${$('#vmDescription').val()}`,
-         'template': `${$('#vmTemplate').val()}`,
-         'area': `${$('#vmArea').val()}`,
-         'password': `${$('#vmPassword').val()}`,
-         'networks': Nets
-       }),
-        success: function(response, satuts, jqXHR){
-            alert('ok');
+        data: JSON.stringify({
+          'owner': '{{workspace}}',
+          'name': `${$('#vmName').val()}`,
+          'description': `${$('#vmDescription').val()}`,
+          'template': `${$('#vmTemplate').val()}`,
+          'area': `${$('#vmArea').val()}`,
+          'password': `${$('#vmPassword').val()}`,
+          'networks': Nets
+        }),
+        success: function(response, satuts, jqXHR) {
+          alert('ok');
         }
+      });
     });
-});
-</script>
+  </script>
 
 
-<script type="text/javascript">
-$("#newUserForm").submit(function(e) {
-    e.preventDefault();
-    $.ajax({
+  <script type="text/javascript">
+    $("#newUserForm").submit(function(e) {
+      e.preventDefault();
+      $.ajax({
         method: "POST",
         url: "http://localhost:5000/{{ workspace }}/users/",
         headers: {
           'token': token
         },
-        data: JSON.stringify({'owner': '{{workspace}}',
-         'username': `${$('#userUsername').val()}`,
-         'vm_can_add': $("#vmAdd").is(":checked"),
-         'vm_can_edit': $("#vmEdit").is(":checked"),
-         'vm_can_delete': $("#vmDelete").is(":checked"),
-         'network_can_add': $("#netAdd").is(":checked"),
-         'network_can_edit': $("#netEdit").is(":checked"),
-         'network_can_delete': $("#netDelete").is(":checked"),
-         'user_can_add': $("#userAdd").is(":checked"),
-         'user_can_edit': $("#userEdit").is(":checked"),
-         'user_can_delete': $("#userDelete").is(":checked"),
-         'router_can_add': false,
-         'router_can_edit': false,
-         'router_can_delete': false
-       }),
-        success: function(response, satuts, jqXHR){
-            alert('ok');
+        data: JSON.stringify({
+          'owner': '{{workspace}}',
+          'username': `${$('#userUsername').val()}`,
+          'vm_can_add': $("#vmAdd").is(":checked"),
+          'vm_can_edit': $("#vmEdit").is(":checked"),
+          'vm_can_delete': $("#vmDelete").is(":checked"),
+          'network_can_add': $("#netAdd").is(":checked"),
+          'network_can_edit': $("#netEdit").is(":checked"),
+          'network_can_delete': $("#netDelete").is(":checked"),
+          'user_can_add': $("#userAdd").is(":checked"),
+          'user_can_edit': $("#userEdit").is(":checked"),
+          'user_can_delete': $("#userDelete").is(":checked"),
+          'router_can_add': false,
+          'router_can_edit': false,
+          'router_can_delete': false
+        }),
+        success: function(response, satuts, jqXHR) {
+          var obj = JSON.parse(response)
+          alert(`IP address ${obj.ip}`)
         }
+      });
     });
+  </script>
+
+
+  <script type="text/javascript">
+
+
+  var socket = new WebSocket(`ws://localhost:3000/{{ workspace }}/${token}/`);
+
+  socket.onmessage = function(e) {
+    var HTML = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
+  <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+  <td class="cell-title">\n\
+    <div>' + item.action + ' ' + item.name +
+      '</div>\n\
+  </td>\n\
+  <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+  <td class="cell-time align-right">' + item.time +
+      '</td>\n\
+  <td class="cell-time align-right">' + item.finished + '</td>\n\
+  <td class="cell-time align-right">' + item.failed + '</td>\n\
+</tr>'
+
+    var data = JSON.parse(e)
+    var elem = document.getElementById(data['type']+'-'+data['id'])
+    if(elem === null){
+      $("#tasksTable tbody").append(html);
+    }else{
+      elem.innerHTML = '<td class="cell-icon"><i class="icon-checker"></i></td>\n\
+      <td class="cell-title">\n\
+        <div>' + item.action + ' ' + item.name +
+          '</div>\n\
+      </td>\n\
+      <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+      <td class="cell-time align-right">' + item.time +
+          '</td>\n\
+      <td class="cell-time align-right">' + item.finished + '</td>\n\
+      <td class="cell-time align-right">' + item.failed + '</td>'
+    }
+  }
+
+
+    $.ajax({
+      url: "http://localhost:8000/running_tasks/{{ workspace }}/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      async: false,
+      success: function(data) {
+        var obj = JSON.parse(data)
+        vRunning_tasks = obj.vm_tasks
+        nRunning_tasks = obj.network_tasks
+        var numTasks = vRunning_tasks.length + nRunning_tasks.length
+        console.log(numTasks)
+        document.getElementById("tNumber").innerHTML = `${numTasks}`;
+        for (item of obj.vm_tasks) {
+          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
+        <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+        <td class="cell-title">\n\
+          <div>' + item.action + ' ' + item.name +
+            '</div>\n\
+        </td>\n\
+        <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+        <td class="cell-time align-right">' + item.time +
+            '</td>\n\
+        <td class="cell-time align-right">' + item.finished + '</td>\n\
+        <td class="cell-time align-right">' + item.failed + '</td>\n\
+      </tr>'
+          $("#tasksTable tbody").append(html);
+        }
+        for (item of obj.network_tasks) {
+          var html = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
+        <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+        <td class="cell-title">\n\
+          <div>' + item.action + ' ' + item.name +
+            '</div>\n\
+        </td>\n\
+        <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+        <td class="cell-time align-right">' + item.time +
+            '</td>\n\
+        <td class="cell-time align-right">' + item.finished + '</td>\n\
+        <td class="cell-time align-right">' + item.failed + '</td>\n\
+      </tr>'
+          $('#tasksTable tbody').append(html);
+        }
+      }
+    });
+  </script>
+
+
+
+<script>
+$('#vmTemplate').change(function() {
+  var data = "";
+  $.ajax({
+      type:"GET",
+      url : `http://localhost:5000/templates/${$(this).val()}`,
+      success : function(data) {
+        var item = JSON.parse(data)
+        html = `<tr class="heading">
+                  <td class="cell-icon"></td>
+                  <td class="cell-title">Name</td>
+                  <td class="cell-status hidden-phone hidden-tablet">CPU</td>
+                  <td class="cell-time align-right">RAM</td>
+                  <td class="cell-time align-right">Disk</td>
+                  <td class="cell-time align-right">OS</td>
+                  <td class="cell-time align-right">Description</td>
+                </tr>
+                <tr class="heading">
+                          <td class="cell-icon"></td>
+                          <td class="cell-title">${item.name}</td>
+                          <td class="cell-status hidden-phone hidden-tablet">CPU</td>
+                          <td class="cell-time align-right">${item.ram}</td>
+                          <td class="cell-time align-right">${item.disk}</td>
+                          <td class="cell-time align-right">${item.os}</td>
+                          <td class="cell-time align-right">${item.description}</td>
+                        </tr>`
+          var y = document.getElementById("templateDetails");
+          y.innerHTML = html
+      },
+      error: function() {
+          alert('Error occured');
+      }
+  });
 });
 </script>
 

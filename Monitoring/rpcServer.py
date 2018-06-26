@@ -35,6 +35,7 @@ def choose_Host(cpu, memory, area):
         if h.host_memory >= max_m:
             max_m = h.host_memory
             max_h = h 
+    print(max_h)
     return max_h
 
 
@@ -53,6 +54,7 @@ def choose_Pool(size, area):
     a = io.query(Area, area_name=area)[0]
     s = size
     q = session.query(Pool).filter(Pool.pool_free_size>=s, Pool.area_id==a.area_id).all()
+    print(q)
     max_s = 0
     max_p = None
     for p in q:

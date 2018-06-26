@@ -114,6 +114,7 @@ class vmRequest(object):
         if ip_req.status_code != 200:
             raise Exception(f"can't get ip. return code={ip_req.status_code}")    
         ip_dict = json.loads(ip_req.text)
+        self.ip = ip_dict['ip']
         return ip_dict['ip']
 
 
@@ -173,6 +174,8 @@ class vmRequest(object):
         username = token_dict['username']
         task_dict = self.req_dict
         task_dict['retries'] = self.retries
+        if self.request.method == 'POST':
+            task_dict['ip'] = self.ip
         task_str = json.dumps(task_dict)
         t = vmTask(
 		    owner=self.owner,

@@ -21,12 +21,13 @@ class Interface:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(h.host_ip, username='root')
-        cmd1 = f'ovs-vsctl set Port {self.name} tag={n.vlan_id}'
+        cmd1 = f'ovs-vsctl set Port {self.name} tag={n.vlan_id + 1}'
         stdin, stdout, stderr = ssh.exec_command(cmd1)
         stdin.close()
         e = stderr.read()
         if e:
             print(e)
+            ssh.close()
             raise Exception(e)
         ssh.close()
         iface = Iface(

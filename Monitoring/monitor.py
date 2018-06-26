@@ -27,6 +27,7 @@ def threaded_function():
 	
 	zk = KazooClient(hosts='localhost:2181,localhost:2182,localhost:2183')
 	zk.start()
+	print("Zoo here!!....")
 	zk.ensure_path("/electionpath")
 	out = zk.create("/electionpath/ch-", b"child",ephemeral=True, sequence=True)
 	path = out.split('/')
@@ -54,12 +55,13 @@ def threaded_function():
 						ip_ind = ip_index						
 						break
 					else:
-						compute_monitor.delay(ips[ip_index].host_name)
-						pool_monitor.delay(ips[ip_index].host_name)
+						print("hello there!!!")
+						#compute_monitor.delay(ips[ip_index].host_name)
+						#pool_monitor.delay(ips[ip_index].host_name)
 					ip_ind = ip_index
 			print("i am a leader")
 		else:
-			print("i am a follower")	
+			print("i am a follower")
 		time.sleep(tim)
 
 if __name__ == '__main__':

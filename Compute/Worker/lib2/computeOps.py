@@ -48,6 +48,7 @@ class vm(item):
         except Exception as e:
             raise ConnectionFailedException('failed to connect to host')
         cmd = f"mkdir {dirName}"
+        print(cmd)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stdin.close()
         ssh.close()
@@ -109,15 +110,16 @@ class vm(item):
         try:
             vol.create(template, self.p_host.ip)
         except Exception as e:
+            print(e)
             io.delete([v])
-            self._deleteDir(self.p_host, self.p_pool.path)
+            #self._deleteDir(self.p_host, self.p_pool.path)
             raise CreateVmException('failed to create volume')
         pi = publicIface(self, self.p_host)
         try:
             pi.create()
             self.pi = pi
         except Exception as e:
-            self._deleteDir(self.p_host, self.p_pool.path)
+            #self._deleteDir(self.p_host, self.p_pool.path)
             vol.delete(self.p_host.ip)
             io.delete([v])
             raise CreateVmException('failed to create public interface')
@@ -140,7 +142,7 @@ class vm(item):
             		<target dev="{pvi.name}"/>
             		</interface>'''
                 except Exception as e:
-                    self._deleteDir(self.p_host.ip, self.p_pool.path)
+                    #self._deleteDir(self.p_host.ip, self.p_pool.path)
                     vol.delete(self.p_host.ip)
                     pi.delete()
                     if len(self.ifaces) > 0:
@@ -154,7 +156,7 @@ class vm(item):
         try:
             md.create(self.p_host.ip, p)
         except Exception as e:
-            self._deleteDir(self.p_host.ip, self.p_pool.path)
+            #self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
             if len(self.ifaces) > 0:
@@ -167,7 +169,7 @@ class vm(item):
         try:
             ud.create(self.p_host.ip, p)
         except Exception as e:
-            self._deleteDir(self.p_host.ip, self.p_pool.path)
+            #self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
             if len(self.ifaces) > 0:
@@ -179,7 +181,7 @@ class vm(item):
         try:
             iso_p = iso.create(self.p_host.ip, p)
         except Exception as e:
-            self._deleteDir(self.p_host.ip, self.p_pool.path)
+            #self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
             if len(self.ifaces) > 0:
@@ -229,7 +231,7 @@ class vm(item):
             dom = conn.defineXML(XMLConf)
             dom.create()
         except Exception as e:
-            self._deleteDir(self.p_host.ip, self.p_pool.path)
+            #self._deleteDir(self.p_host.ip, self.p_pool.path)
             vol.delete(self.p_host.ip)
             pi.delete()
             if len(self.ifaces) > 0:

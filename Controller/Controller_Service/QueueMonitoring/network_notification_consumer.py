@@ -123,7 +123,7 @@ def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
     channel = connection.channel()
     channel.queue_declare('network_notification')
-    channel.basic_consume(handler, queue='network_notification', no_ack=False)
+    channel.basic_consume(handler, queue='network_notification', no_ack=True)
     channel.start_consuming()
 
 if __name__ == '__main__':

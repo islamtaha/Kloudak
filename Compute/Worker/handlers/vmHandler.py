@@ -42,6 +42,7 @@ def post(body_dict):
             networkTask(broker, netReq_dict)
         body_dict['status'] = 'success'
     except Exception as e:
+        print(e)
         body_dict['status'] = 'failed'
     vmNotificationTask(broker, body_dict)
 

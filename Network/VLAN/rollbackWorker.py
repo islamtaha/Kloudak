@@ -15,5 +15,5 @@ if __name__ == '__main__':
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     print("handling connection")
-    channel.basic_consume(handler, queue='network_rollback', no_ack=False)
+    channel.basic_consume(handler, queue='network_rollback', no_ack=True)
     channel.start_consuming()
