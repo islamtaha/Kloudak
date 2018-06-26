@@ -5,7 +5,7 @@ import jwt
 
 
 def sendNotification(ip, port, workspace, tok, message):
-	token = jwt.encode(tok, 'secret', algorithm='HS256')
+	token = jwt.encode(tok, 'SECRET_KEY', algorithm='HS256')
 	ws = create_connection("ws://" + ip + ":" + str(port) + "/ws/chat/" + workspace + "/" + token.decode("utf-8"))
 	s = json.dumps({"message": message})	
 	ws.send(s)

@@ -35,6 +35,7 @@ class vmTasks():
     def create(self, description=""):
         '''generates a task in json format structured as:
             {
+                "id": <int>,
                 "method": "POST",
                 "type": "vm"
                 "name": "vm name",
@@ -48,7 +49,8 @@ class vmTasks():
                 "disk": disk_size,
                 "password": "user password",
                 "template": "template name",
-                "os": "os name"
+                "os": "os name",
+                "retries": <int>
             }
         '''
         self.body['method'] = 'POST'

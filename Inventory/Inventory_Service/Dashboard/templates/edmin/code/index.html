@@ -481,7 +481,7 @@
           'description': `${$('#netDescription').val()}`
         }),
         success: function(response, satuts, jqXHR) {
-          alert('ok');
+          alert('Request Sent');
         }
       });
     });
@@ -511,7 +511,9 @@
           'networks': Nets
         }),
         success: function(response, satuts, jqXHR) {
-          alert('ok');
+          var obj = JSON.parse(response)
+          var ip = obj.ip
+          alert(`Request Sent.\nIP address: ${ip}`);
         }
       });
     });
@@ -553,41 +555,6 @@
 
 
   <script type="text/javascript">
-
-
-  var socket = new WebSocket(`ws://localhost:3000/{{ workspace }}/${token}/`);
-
-  socket.onmessage = function(e) {
-    var HTML = '<tr id=' + item.type + '-' + item.id + '"class="task">\n\
-  <td class="cell-icon"><i class="icon-checker"></i></td>\n\
-  <td class="cell-title">\n\
-    <div>' + item.action + ' ' + item.name +
-      '</div>\n\
-  </td>\n\
-  <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
-  <td class="cell-time align-right">' + item.time +
-      '</td>\n\
-  <td class="cell-time align-right">' + item.finished + '</td>\n\
-  <td class="cell-time align-right">' + item.failed + '</td>\n\
-</tr>'
-
-    var data = JSON.parse(e)
-    var elem = document.getElementById(data['type']+'-'+data['id'])
-    if(elem === null){
-      $("#tasksTable tbody").append(html);
-    }else{
-      elem.innerHTML = '<td class="cell-icon"><i class="icon-checker"></i></td>\n\
-      <td class="cell-title">\n\
-        <div>' + item.action + ' ' + item.name +
-          '</div>\n\
-      </td>\n\
-      <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
-      <td class="cell-time align-right">' + item.time +
-          '</td>\n\
-      <td class="cell-time align-right">' + item.finished + '</td>\n\
-      <td class="cell-time align-right">' + item.failed + '</td>'
-    }
-  }
 
 
     $.ajax({
@@ -674,6 +641,44 @@ $('#vmTemplate').change(function() {
       }
   });
 });
+</script>
+
+<script>
+var socket = new WebSocket(`ws://localhost:3000/ws/chat/{{ workspace }}/${token}`);
+
+socket.onmessage = function(e) {
+  var data = JSON.parse(e.data)
+  var item = data.message
+  console.log(item)
+  var elem = document.getElementById(item.type+'-'+item.id)
+  if(elem === null){
+    var html = '<tr id="'+ item.type + '-' + item.id +'">\n\
+    <td class="cell-icon"><i class="icon-checker"></i></td>\n\
+    <td class="cell-title">\n\
+      <div>' + item.action + ' ' + item.name +
+        '</div>\n\
+    </td>\n\
+    <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+    <td class="cell-time align-right">' + item.time +
+        '</td>\n\
+    <td class="cell-time align-right">' + item.finished + '</td>\n\
+    <td class="cell-time align-right">' + item.failed + '</td>\n\
+    </tr>'
+    $("#tasksTable tbody").append(html);
+  }else{
+    elem.innerHTML = '<td class="cell-icon"><i class="icon-checker"></i></td>\n\
+    <td class="cell-title">\n\
+      <div>' + item.action + ' ' + item.name +
+        '</div>\n\
+    </td>\n\
+    <td class="cell-status hidden-phone hidden-tablet"><b class="due">' + item.type + '</b></td>\n\
+    <td class="cell-time align-right">' + item.time +
+        '</td>\n\
+    <td class="cell-time align-right">' + item.finished + '</td>\n\
+    <td class="cell-time align-right">' + item.failed + '</td>'
+  }
+  return false;
+}
 </script>
 
 

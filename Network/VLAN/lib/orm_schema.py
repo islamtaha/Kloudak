@@ -38,8 +38,8 @@ class Network(base):
     __table_args__ = (UniqueConstraint('network_name', 'network_owner'),)
 
     network_id = Column(Integer(), primary_key=True)
-    network_name = Column(String(50), index=True, nullable=False, unique=True)
-    network_owner = Column(String(50), index=True, nullable=False, unique=True)
+    network_name = Column(String(50), index=True, nullable=False)
+    network_owner = Column(String(50), index=True, nullable=False)
     vlan_id = Column(Integer(), ForeignKey('vlans.vlan_id'))
 
 

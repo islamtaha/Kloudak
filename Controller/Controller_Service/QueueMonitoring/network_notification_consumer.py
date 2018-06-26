@@ -115,8 +115,9 @@ def handler(ch, method, properties, nbody):
         task_failed = False
     
     t = fetchTask(task_id, task_type, retries, task_failed, body)
-    token = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'secret'}
-    sendNotification(notificationIP, 3000, body['owner'], token, t.as_dict())
+    if t:
+        token = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'secret'}
+        sendNotification(notificationIP, 3000, body['owner'], token, t.as_dict())
 
 
 def main():

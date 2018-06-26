@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'ControllerAPI',
     'broker_tasks',
     'corsheaders',
-    'django_extensions'
+    'django_extensions',
+    'QueueMonitoring'
 ]
 
 MIDDLEWARE = [

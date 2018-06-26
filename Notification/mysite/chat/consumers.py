@@ -8,8 +8,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = 'chat_%s' % self.room_name
 		self.token = self.scope['url_route']['kwargs']['token']
-		data = jwt.decode(self.token, 'secret', algorithms=['HS256'])
+		data = jwt.decode(self.token, 'SECRET_KEY', algorithm='HS256')
 		self.user = data["username"]
+		print(self.room_name)
 		try:
 			self.u = User.objects.get(username=self.user)
 			if self.u.is_superuser:
@@ -22,6 +23,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			else:
 				flag = False
 				for key, value in data.items():
+					print(key)
 					if self.room_name == key:
 						# Join room group
 						flag = True        			
@@ -45,6 +47,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					await self.accept()
 			if flag == False:
 				await self.close()
+			print(flag)
 		else:
 			await self.close()
 
