@@ -41,7 +41,7 @@ def signup(request):
         except Exception as e:
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         login(request, newuser)
-        res = redirect('http://localhost:5000/kloudak/workspaces/')
+        res = redirect('http://localhost:5000/ui/dashboard/')
         return res
         #return HttpResponse(status=status.HTTP_201_CREATED)
 
@@ -60,12 +60,12 @@ def userlogin(request):
             if user:
                 login(request, user)
                 jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
-                res = redirect('http://localhost:5000/kloudak/workspaces/')
+                res = redirect('http://localhost:5000/ui/dashboard/')
                 res['token'] = jwt_token['token']
                 return res
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return redirect('http://localhost:5000/kloudak/index/')
+        except Exception as e:
+            return redirect('http://localhost:5000/ui/index/')
 
 
 @csrf_exempt
@@ -74,7 +74,7 @@ def userlogout(request):
         logout(request)
     except Exception as e:
         print(e)
-    return redirect('http://localhost:5000/kloudak/index/')
+    return redirect('http://localhost:5000/ui/index/')
 
 
 @csrf_exempt
@@ -658,9 +658,9 @@ def workspace_details(request):
             workspace = Workspace.objects.get(name=workspace_name)
         except Workspace.DoesNotExist:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-        wsVMs = VM.objects.get(owner=workspace)
-        wsNets = Network.objects.get(owner=workspace)
-        wsRouters = Router.objects.get(owner=workspace)
+        wsVMs = VM.objects.all().filter(owner=workspace)
+        wsNets = Network.objects.all().filter(owner=workspace)
+        wsRouters = Router.objects.all().filter(owner=workspace)
         if len(wsVMs) or len(wsNets) or len(wsRouters):
             return HttpResponse('workspace contains objects. delete them first', status=status.HTTP_405_METHOD_NOT_ALLOWED)
         workspace.delete()

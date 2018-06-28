@@ -50,7 +50,7 @@
                                 <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Add User</a></li>
-                <li><a href="#">Delete Workspace</a></li>
+                <li><a href="#" id="deleteWS" name="{{ workspace }}" >Delete Workspace</a></li>
                 <li class="divider"></li>
               </ul>
             </li>
@@ -200,6 +200,72 @@
 
 
   <!-- modals -->
+
+
+  <div id="VmsModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Virtual Machines</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="Vms">
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div id="NetworksModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Networks</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="Networks">
+            <li><a class="netItem"></a></li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="NetInfoModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Network Name</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="NetInfoList">
+            <li>blah blah</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
   <div id="newNetModal" class="modal fade" role="dialog" style="display: none">
     <div class="modal-dialog">
       <!-- Modal content-->
@@ -243,14 +309,10 @@
               <label for="Template"><b>Choose Template</b></label>
               <select id="vmTemplate" name="template">
               </select>
-
               <table id="templateDetails" class="table table-message">
                 <tbody>
                 </tbody>
               </table>
-
-
-
               <label for="Area"><b>Choose Area</b></label>
               <select id="vmArea" name="area">
               </select>
@@ -384,24 +446,6 @@
       }
     });
 
-    $('#networks').click(function(event) {
-      event.preventDefault();
-      $.ajax({
-        url: "http://localhost:5000/{{ workspace }}/networks/",
-        type: "GET",
-        headers: {
-          'token': token
-        },
-        success: function(data) {
-          var obj = JSON.parse(data)
-          var networks = obj.networks
-          for (item of obj.networks) {
-            console.log(item.name)
-          }
-        }
-      });
-    });
-
 
     $('#newVmAnchor').click(function(event) {
       event.preventDefault();
@@ -428,23 +472,7 @@
     });
 
 
-    $('#vms').click(function(event) {
-      event.preventDefault();
-      $.ajax({
-        url: "http://localhost:5000/{{ workspace }}/vms/",
-        type: "GET",
-        headers: {
-          'token': token
-        },
-        success: function(data) {
-          var obj = JSON.parse(data)
-          var vms = obj.vms
-          for (item of obj.vms) {
-            console.log(item.name)
-          }
-        }
-      });
-    });
+
   </script>
 
 
@@ -461,6 +489,7 @@
         success: function(response, satuts, jqXHR) {
           alert('ok');
           location.href = `http://localhost:5000/kloudak/workspaces/${$('#wsName').val()}/`
+          $('#newWSModal').modal('hide');
         }
       });
     });
@@ -482,6 +511,7 @@
         }),
         success: function(response, satuts, jqXHR) {
           alert('Request Sent');
+          $('#newNetModal').modal('hide');
         }
       });
     });
@@ -514,6 +544,7 @@
           var obj = JSON.parse(response)
           var ip = obj.ip
           alert(`Request Sent.\nIP address: ${ip}`);
+          $('#newVModal').modal('hide');
         }
       });
     });
@@ -546,8 +577,8 @@
           'router_can_delete': false
         }),
         success: function(response, satuts, jqXHR) {
-          var obj = JSON.parse(response)
-          alert(`IP address ${obj.ip}`)
+          alert('User created!')
+          $('#newUserModal').modal('hide');
         }
       });
     });
@@ -679,8 +710,104 @@ socket.onmessage = function(e) {
   }
   return false;
 }
-</script>
 
+
+$('#deleteWS').click(function(event) {
+  event.preventDefault();
+  $.ajax({
+    url: "http://localhost:5000/workspaces/{{ workspace }}/",
+    type: "DELETE",
+    headers: {
+      'token': token
+    },
+    success: function(data) {
+      location.href = `http://localhost:5000/kloudak/workspaces/`
+      }
+  });
+});
+
+
+
+$('#networks').click(function(event) {
+  event.preventDefault();
+  $.ajax({
+    url: "http://localhost:5000/{{ workspace }}/networks/",
+    type: "GET",
+    headers: {
+      'token': token
+    },
+    success: function(data) {
+      var content = "";
+      var obj = JSON.parse(data)
+      var networks = obj.networks
+      for (item of obj.networks) {
+        var html = `<li><a class="netItem" name="${item.name}" href="#" data-toggle="modal" data-target="#NetInfoModal">
+                ${item.name}</a><a href="#" class="deleteNetwork" name="${item.name}"><i class="icon-minus align-right"></i></a>
+      </li>`
+      content = content + html
+      }
+      var x = document.getElementById("Networks")
+      x.innerHTML = content
+      $('#NetworksModal').modal('show');
+    }
+  });
+});
+
+
+
+$('.netItem').click(function(event) {
+  event.preventDefault();
+  console.log('here')
+  $.ajax({
+      url: "http://localhost:5000/{{ workspace }}/networks/" + $('this').attr('name')+ "/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      success: function(data) {
+        var obj = JSON.parse(data)
+        console.log(data)
+        $('#NetInfoModal').modal('show');
+      }
+    });
+  });
+
+
+
+  $('#vms').click(function(event) {
+    event.preventDefault();
+    $.ajax({
+      url: "http://localhost:5000/{{ workspace }}/vms/",
+      type: "GET",
+      headers: {
+        'token': token
+      },
+      success: function(data) {
+        var obj = JSON.parse(data)
+        var vms = obj.vms
+        var content = ""
+        for (item of obj.vms) {
+          var html = `<li><a class="vmItem" name="${item.name}" href="#" data-toggle="modal" data-target="#VmInfoModal">
+                  ${item.name}</a><a href="#" class="deleteVm" name="${item.name}"><i class="icon-minus align-right"></i></a>
+        </li>`
+        content = content + html
+        }
+        var x = document.getElementById("Vms")
+        x.innerHTML = content
+        $('#VmsModal').modal('show');
+      },
+      error: function(XHR, status, error) {
+        if (XHR.status == 404) {
+          alert("You don't have any VMs");
+        }
+        else {
+          alert(`Status: ${XHR.status}\n\ Error: ${error}`)
+        }
+        }
+    });
+  });
+
+</script>
 
 </body>
 

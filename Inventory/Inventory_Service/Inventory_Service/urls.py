@@ -19,6 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^kloudak/', include('Dashboard.urls')),
+    url(r'^ui/', include('UI.urls')),
     url(r'^', include('InventoryAPI.urls')),
     
 ]
