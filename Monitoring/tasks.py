@@ -87,7 +87,9 @@ def compute_monitor(host):
     host_body['name'] = host
     host_body['memory'] = nodeinfo[1] / 1024.0
     host_body['cpus'] = nodeinfo[2]
+    print(conn.getFreeMemory() / (1024.0 * 1024.0 * 1024.0))
     host_body['free_memory'] = conn.getFreeMemory() / (1024.0 * 1024.0 * 1024.0)
+    print(host_body['free_memory'])
     host_log(host_body)
     doms = conn.listAllDomains()
     if len(doms) > 0:

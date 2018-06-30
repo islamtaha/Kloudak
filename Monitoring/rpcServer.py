@@ -35,7 +35,6 @@ def choose_Host(cpu, memory, area):
         if h.host_memory >= max_m:
             max_m = h.host_memory
             max_h = h 
-    print(max_h)
     return max_h
 
 

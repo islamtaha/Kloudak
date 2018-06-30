@@ -139,14 +139,14 @@ def UserProfile_Details(request):
     up = request.path.split('/')[3]
     try:
         workspace = Workspace.objects.get(name=ws)
-        profile = CustomUser.objects.get(user=User.objects.get(username=up))
+        profile = CustomUser.objects.get(user=User.objects.get(username=up), workspace=workspace)
     except Workspace.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
     except CustomUser.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
-        return HttpResponse(json.dumps(profile.as_dict), status=status.HTTP_200_OK)
+        return HttpResponse(json.dumps(profile.as_dict()), status=status.HTTP_200_OK)
     if request.method == 'DELETE':
         cp = CustomUser.objects.get(user=request.user, workspace=workspace)
         if not cp.can_delete_user:
