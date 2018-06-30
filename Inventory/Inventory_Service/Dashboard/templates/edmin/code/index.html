@@ -253,7 +253,6 @@
         </div>
         <div class="modal-body">
           <ul id="NetInfoList">
-            <li>blah blah</li>
           </ul>
         </div>
         <div class="modal-footer">
@@ -522,7 +521,9 @@
       e.preventDefault();
       var Nets = []
       $("#vmNetworks > option").each(function() {
-        Nets.push(`${this.value}`)
+        if($(this).is(':selected')){
+          Nets.push(`${this.value}`)
+      }
       });
       alert(Nets)
       $.ajax({
@@ -742,7 +743,7 @@ $('#networks').click(function(event) {
       var networks = obj.networks
       for (item of obj.networks) {
         var html = `<li><a class="netItem" name="${item.name}" href="#" data-toggle="modal" data-target="#NetInfoModal">
-                ${item.name}</a><a href="#" class="deleteNetwork" name="${item.name}"><i class="icon-minus align-right"></i></a>
+                ${item.name}</a><a href="#" class="deleteNetwork" id="${item.name}"><i class="icon-minus align-right"></i></a>
       </li>`
       content = content + html
       }
@@ -759,7 +760,7 @@ $('.netItem').click(function(event) {
   event.preventDefault();
   console.log('here')
   $.ajax({
-      url: "http://localhost:5000/{{ workspace }}/networks/" + $('this').attr('name')+ "/",
+      url: "http://localhost:5000/{{ workspace }}/networks/" + $(this).attr('name')+ "/",
       type: "GET",
       headers: {
         'token': token
@@ -769,6 +770,7 @@ $('.netItem').click(function(event) {
         console.log(data)
         $('#NetInfoModal').modal('show');
       }
+
     });
   });
 

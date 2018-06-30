@@ -16,6 +16,7 @@ def set_config(db, brkr):
 
 
 def post(body_dict):
+    print('post')
     from lib2.areaOps import area
     try:
         a = area().get(name=body_dict['area'])

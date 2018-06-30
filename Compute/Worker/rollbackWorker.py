@@ -1,6 +1,8 @@
 #!/usr/bin/python3.6
 import pika
 import json
+from lib2 import base
+base.database = '172.17.0.1'
 from lib2.computeOps import vm
 
 def handler(ch, method, properties, body):

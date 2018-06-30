@@ -77,7 +77,7 @@ class networkRequest(object):
             }
             url = self.inv_addr + self.owner + '/networks/' + self.name + '/'
             api_call(method='put', url=url, body=json.dumps(body))
-            sendNotification(notificationIP, 3000, body['owner'], token, t.as_dict())
+            sendNotification(notificationIP, 3000, t.owner, token, t.as_dict())
             return HttpResponse(self.req_str, status=status.HTTP_200_OK)
 
 
@@ -95,7 +95,7 @@ class networkRequest(object):
             del_req = api_call(method='delete', url=url)
             if del_req.status_code != 202:
                 return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            sendNotification(notificationIP, 3000, body['owner'], token, t.as_dict())
+            sendNotification(notificationIP, 3000, t.owner, token, t.as_dict())
             return HttpResponse(status=status.HTTP_202_ACCEPTED)
 
 

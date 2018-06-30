@@ -52,6 +52,8 @@ def fetchTask(task_id, task_type, retries, failed=False, body={}):
                 retry(vTask)
                 return None
             else:
+                vTask.finished = True
+                vTask.save()
                 vmRollback(vTask, inventory, broker, body)
         vTask.failed = failed
         vTask.vmConf = True

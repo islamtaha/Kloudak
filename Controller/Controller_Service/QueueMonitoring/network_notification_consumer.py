@@ -59,6 +59,7 @@ def fetchTask(task_id, task_type, retries, failed=False, body=''):
                 retry(vTask, body)
                 return None
             else:
+                vTask.finished = True
                 vmRollback(vTask, inventory, broker, body)
         vTask.failed = failed
         vTask.netConf = True

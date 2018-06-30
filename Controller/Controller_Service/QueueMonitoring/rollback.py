@@ -24,8 +24,9 @@ def vmRollback(task, inventory, broker, body={}):
         'method': task.method,
         'type': 'vm'
     }
+    print(body)
     if task.method == 'POST':
-        if 'host' in body.keys():
+        if 'networks' in body.keys():
             #failed at network config. delete vm
             dispatch(json.dumps(body), 'vm_rollback', broker)
         else:

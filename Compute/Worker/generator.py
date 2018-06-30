@@ -2,7 +2,7 @@ import pika, json
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
-channel.queue_declare('vm')
+channel.queue_declare('vm_rollback')
 
 pbody = {
                 "method": "POST",
@@ -21,5 +21,9 @@ pbody = {
                 "os": "Fedora"
             }
 
-channel.basic_publish(exchange='', routing_key='vm', body=json.dumps(pbody))
+
+rbody = {"owner": "MU-DataCenter", "name": "WS-01", "method": "POST", "type": "vm"}
+
+
+channel.basic_publish(exchange='', routing_key='vm_rollback', body=json.dumps(rbody))
 connection.close()

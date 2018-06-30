@@ -24,9 +24,10 @@ def delete(body):
             n = network().get(name=net['network'], owner=body['owner'])
             iface = Interface().get(name=net['name'], network=n)
             iface.delete()
-            body['status'] = 'success'
+        body['status'] = 'success'
     except Exception as e:
         #log task
+        print(e)
         body['status'] = 'failed'
     body['type'] = 'vm'
     networkNotificationTask(broker, body)
@@ -35,13 +36,16 @@ def delete(body):
 
 def post(body):
     from lib.NetworkOps import network
+    print(body['networks'])
     try:
         for net in body['networks']:
+            print(net)
             n = network(net['network'], body['owner'])
             n.addInterface(net['name'], net['host'], net['mac'])
         body['status'] = 'success'
     except Exception as e:
         #log task
+        print(e)
         body['status'] = 'failed'
     body['type'] = 'vm'
     networkNotificationTask(broker, body)

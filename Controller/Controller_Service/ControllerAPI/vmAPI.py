@@ -7,6 +7,11 @@ from .helpers import api_call
 from .exceptions import MissingKeyException
 from .models import vmTask
 
+from QueueMonitoring.wsNotifier import sendNotification
+
+token = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'secret'}
+notificationIP = 'localhost'
+
 
 class vmRequest(object):
     '''----class for handling vm API requests----
@@ -77,6 +82,7 @@ class vmRequest(object):
             }
             url = self.inv_addr + self.owner + '/vms/' + self.name + '/'
             api_call(method='put', url=url, body=json.dumps(body))
+            sendNotification(notificationIP, 3000, t.owner, token, t.as_dict())
             return HttpResponse(self.req_str, status=status.HTTP_200_OK)
 
 
@@ -94,6 +100,7 @@ class vmRequest(object):
             del_req = api_call(method='delete', url=url)
             if del_req.status_code != 202:
                 return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            sendNotification(notificationIP, 3000, t.owner, token, t.as_dict())
             return HttpResponse(status=status.HTTP_202_ACCEPTED)
 
 
@@ -164,6 +171,7 @@ class vmRequest(object):
         api_call(method='post', url=url, body=json.dumps(body))
         res_dict = json.loads(self.req_str)
         res_dict['ip'] = self.ip
+        sendNotification(notificationIP, 3000, t.owner, token, t.as_dict())
         return HttpResponse(json.dumps(res_dict), status=status.HTTP_200_OK)
 
 
