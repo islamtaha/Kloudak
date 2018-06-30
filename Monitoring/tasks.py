@@ -57,8 +57,10 @@ def pool_log(body):
         pool_free_size=body['free_size']
     )
     io.add([pool_stat])
-    p = io.query(Pool, pool_name=body['name'])[0]
-    io.update(p, {'pool_size': body['size'], 'pool_free_size': body['free_size']})
+    ps = io.query(Pool, pool_name=body['name'])
+    if len(ps) > 0:
+        p = ps[0]
+        io.update(p, {'pool_size': body['size'], 'pool_free_size': body['free_size']})
 
 
 @app.task
@@ -111,6 +113,7 @@ def pool_monitor(host):
         for pool in pools:
             info = pool.info()
             pool_body['name'] = pool.name()
+            print(pool_body['name'])
             pool_body['size'] = info[1] / (1024 * 1024 * 1024)
             pool_body['free_size'] = info[3] / (1024 * 1024 * 1024)
             pool_log(pool_body)

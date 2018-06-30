@@ -56,8 +56,8 @@ def threaded_function():
 						break
 					else:
 						print("hello there!!!")
-						#compute_monitor.delay(ips[ip_index].host_name)
-						#pool_monitor.delay(ips[ip_index].host_name)
+						compute_monitor.delay(ips[ip_index].host_name)
+						pool_monitor.delay(ips[ip_index].host_name)
 					ip_ind = ip_index
 			print("i am a leader")
 		else:
