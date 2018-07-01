@@ -49,7 +49,7 @@
             <li class="nav-user dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Workspace
                                 <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Add User</a></li>
+                <li><a data-toggle="modal" data-target="#newUserModal" href="#">Add User</a></li>
                 <li><a href="#" id="deleteWS" name="{{ workspace }}" >Delete Workspace</a></li>
                 <li class="divider"></li>
               </ul>
@@ -74,13 +74,12 @@
                                 </a></li>
               <li><a id="networks" href="#">Networks
               </a></li>
-              <li><a href="#">Users
+              <li><a id="users" href="#">Users
                                                                             </a></li>
             </ul>
             <!--/.widget-nav-->
             <ul class="widget widget-menu unstyled">
-              <li><a href="#">Templates</a></li>
-              <li><a href="#">Areas</a></li>
+
               {% if workspaces %}
               <li><a class="collapsed" data-toggle="collapse" href="#togglePages"><i class="menu-icon icon-cog">
                                 </i><i class="icon-chevron-down pull-right"></i><i class="icon-chevron-up pull-right">
@@ -221,7 +220,23 @@
   </div>
 
 
-
+  <div id="VmInfoModal" class="modal fade" role="dialog" style="display: none">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="VmName" class="modal-title">VM Name</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="VmInfoList">
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="NetworksModal" class="modal fade" role="dialog" style="display: none">
     <div class="modal-dialog">
@@ -249,7 +264,7 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Network Name</h4>
+          <h4 id="NetName" class="modal-title">Network Name</h4>
         </div>
         <div class="modal-body">
           <ul id="NetInfoList">
@@ -750,13 +765,21 @@ $('#networks').click(function(event) {
       var x = document.getElementById("Networks")
       x.innerHTML = content
       $('#NetworksModal').modal('show');
-    }
+    },
+    error: function(XHR, status, error) {
+      if (XHR.status == 404) {
+        alert("You don't have any Networks");
+      }
+      else {
+        alert(`Status: ${XHR.status}\n\ Error: ${error}`)
+      }
+      }
   });
 });
 
 
 
-$('.netItem').click(function(event) {
+$('#NetworksModal').on("click", ".netItem", function(event) {
   event.preventDefault();
   console.log('here')
   $.ajax({
@@ -768,11 +791,36 @@ $('.netItem').click(function(event) {
       success: function(data) {
         var obj = JSON.parse(data)
         console.log(data)
+        document.getElementById("NetName").innerHTML = obj.name
+        var x = document.getElementById("NetInfoList")
+        var html = `<li>description: ${obj.description}</li>
+        `
+        x.innerHTML = html
         $('#NetInfoModal').modal('show');
       }
-
     });
   });
+
+  $('#NetworksModal').on("click", ".deleteNetwork", function(event) {
+    event.preventDefault();
+    console.log('here')
+    $.ajax({
+        url: "http://localhost:8000/networks/",
+        data: JSON.stringify({
+          'name': `${$(this).attr('id')}`,
+          'owner': '{{ workspace }}'
+        }),
+        type: "DELETE",
+        headers: {
+          'token': token
+        },
+        success: function(data) {
+          console.log('success')
+          $('#NetworksModal').modal('hide');
+        }
+
+      });
+    });
 
 
 
@@ -790,7 +838,7 @@ $('.netItem').click(function(event) {
         var content = ""
         for (item of obj.vms) {
           var html = `<li><a class="vmItem" name="${item.name}" href="#" data-toggle="modal" data-target="#VmInfoModal">
-                  ${item.name}</a><a href="#" class="deleteVm" name="${item.name}"><i class="icon-minus align-right"></i></a>
+                  ${item.name}</a><a href="#" class="deleteVm" id="${item.name}"><i class="icon-minus align-right"></i></a>
         </li>`
         content = content + html
         }
@@ -808,6 +856,61 @@ $('.netItem').click(function(event) {
         }
     });
   });
+
+
+
+  $('#VmsModal').on("click", ".vmItem", function(event) {
+    event.preventDefault();
+    console.log('here')
+    $.ajax({
+        url: "http://localhost:5000/{{ workspace }}/vms/" + $(this).attr('name')+ "/",
+        type: "GET",
+        headers: {
+          'token': token
+        },
+        success: function(data) {
+          var obj = JSON.parse(data)
+          console.log(data)
+          var name = document.getElementById("VmName")
+          name.innerHTML = obj.name
+          var x = document.getElementById("VmInfoList")
+          var nhtml = ""
+          var nobj = obj.networks
+          console.log(nobj)
+          for (net of nobj) {
+            nhtml = nhtml + `<li>name: ${net.name}</li>`
+          }
+          var html = `<li>IP: ${obj.ip}</li>
+            <li>description: ${obj.description}</li>
+            <li>networks: <ul>${nhtml}</ul></li>
+          `
+          x.innerHTML = html
+          $('#VmInfoModal').modal('show');
+        }
+
+      });
+    });
+
+    $('#VmsModal').on("click", ".deleteVm", function(event) {
+      event.preventDefault();
+      console.log('here')
+      $.ajax({
+          url: "http://localhost:8000/vms/",
+          type: "DELETE",
+          data: JSON.stringify({
+            'name': `${$(this).attr('id')}`,
+            'owner': '{{ workspace }}'
+          }),
+          headers: {
+            'token': token
+          },
+          success: function(data) {
+            console.log('success')
+            $('#VmsModal').modal('hide');
+          }
+
+        });
+      });
 
 </script>
 

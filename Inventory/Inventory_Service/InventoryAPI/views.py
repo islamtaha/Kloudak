@@ -39,6 +39,7 @@ def signup(request):
             newuser = User.objects.create_user(username=username, password=password, email=email)
             newuser.save()
         except Exception as e:
+            return redirect('http://localhost:5000/kloudak/index/')
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
         login(request, newuser)
         res = redirect('http://localhost:5000/ui/dashboard/')
@@ -60,12 +61,13 @@ def userlogin(request):
             if user:
                 login(request, user)
                 jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
+                print(request.META.HTTP_REFERER)
                 res = redirect('http://localhost:5000/ui/dashboard/')
                 res['token'] = jwt_token['token']
                 return res
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return redirect('http://localhost:5000/ui/index/')
+            return redirect('http://localhost:5000/kloudak/index/')
 
 
 @csrf_exempt
@@ -74,7 +76,7 @@ def userlogout(request):
         logout(request)
     except Exception as e:
         print(e)
-    return redirect('http://localhost:5000/ui/index/')
+    return redirect('http://localhost:5000/kloudak/index/')
 
 
 @csrf_exempt

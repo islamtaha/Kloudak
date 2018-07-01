@@ -39,5 +39,6 @@ def delete(body):
         body['status'] = 'success'
     except Exception as e:
         #log task
+        print(e)
         body['status'] = 'failed'
     networkNotificationTask(broker, body)

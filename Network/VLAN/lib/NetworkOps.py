@@ -87,7 +87,8 @@ class network:
         n = t.query(Network, network_name=self.name, network_owner=self.owner)[0]
         vid = n.vlan_id
         vlan = t.query(Vlan, vlan_id=vid)[0]
-        t.delete([n]),
+        t.delete([n])
+        t.commit()
         t.update(vlan, {'vlan_available': True})
         t.commit()
 

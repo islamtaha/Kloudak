@@ -107,6 +107,7 @@ def fetchTask(task_id, task_type, retries, failed=False, body=''):
 
 def handler(ch, method, properties, nbody):
     body = json.loads(nbody.decode('utf-8'))
+    print(body)
     task_type = body['type']
     task_id = body['id']
     retries = body['retries']

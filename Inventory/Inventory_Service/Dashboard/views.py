@@ -14,7 +14,7 @@ def index(request):
 
 
 
-@login_required
+@login_required(login_url='http://localhost:5000/kloudak/index/')
 def workspaces(request):
     UPs = CustomUser.objects.all().filter(user=request.user)
     if len(UPs) > 0:
@@ -24,7 +24,7 @@ def workspaces(request):
     return r
 
 
-@login_required
+@login_required(login_url='http://localhost:5000/kloudak/index/')
 def getWS(request, workspace):
     UPs = CustomUser.objects.all().filter(user=request.user)
     workspaces = [up.workspace for up in UPs if up.workspace.name != Workspace]
@@ -34,12 +34,12 @@ def getWS(request, workspace):
     return r
 
 
-@login_required
+@login_required(login_url='http://localhost:5000/kloudak/index/')
 def vms(request, workspace):
     return HttpResponse(f'this is vms of ws: {workspace}')
 
 
-@login_required
+@login_required(login_url='http://localhost:5000/kloudak/index/')
 def networks(request, workspace):
     return HttpResponse(f'this is networks ws: {workspace}')
 

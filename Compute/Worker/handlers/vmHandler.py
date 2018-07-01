@@ -60,6 +60,7 @@ def delete(body_dict):
         v = vm().get(body_dict['name'], body_dict['owner'])
         if 'status' not in body_dict.keys():
             netReq_dict = {}
+            netReq_dict['retries'] = body_dict['retries']
             netReq_dict['id'] = body_dict['id']
             netReq_dict['method'] = 'DELETE'
             netReq_dict['vm'] = body_dict['name']

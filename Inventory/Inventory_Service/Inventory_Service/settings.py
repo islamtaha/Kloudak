@@ -150,3 +150,6 @@ GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
+
+LOGIN_URL = 'http://localhost:5000/kloudak/index/'
+LOGIN_REDIRECT_URL = 'http://localhost:5000/kloudak/index/'

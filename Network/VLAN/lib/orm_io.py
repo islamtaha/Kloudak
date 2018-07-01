@@ -114,6 +114,7 @@ class dbTransaction:
                 areas = t.query(Area, area_name='Area-01')
         '''
         res = self.session.query(cl).filter_by(**kwargs).all()
+        return res
 
 
     def generatorQuery(self, cl, **kwargs):
