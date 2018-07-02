@@ -542,7 +542,6 @@
           Nets.push(`${this.value}`)
       }
       });
-      alert(Nets)
       $.ajax({
         method: "POST",
         url: "http://localhost:8000/vms/",
@@ -562,7 +561,7 @@
           var obj = JSON.parse(response)
           var ip = obj.ip
           alert(`Request Sent.\nIP address: ${ip}`);
-          $('#newVModal').modal('hide');
+          $('#newVmModal').modal('hide');
         }
       });
     });
