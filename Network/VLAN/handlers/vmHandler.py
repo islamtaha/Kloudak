@@ -30,6 +30,8 @@ def delete(body):
         print(e)
         body['status'] = 'failed'
     body['type'] = 'vm'
+    if 'retries' not in body.keys():
+        body['retries'] = 2
     networkNotificationTask(broker, body)
 
 

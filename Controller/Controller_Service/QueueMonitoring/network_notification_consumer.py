@@ -110,7 +110,10 @@ def handler(ch, method, properties, nbody):
     print(body)
     task_type = body['type']
     task_id = body['id']
-    retries = body['retries']
+    if 'retries' in body.keys():
+        retries = body['retries']
+    else:
+        body['retries'] = 1
     if body['status'] == 'failed':
         task_failed = True
     else:

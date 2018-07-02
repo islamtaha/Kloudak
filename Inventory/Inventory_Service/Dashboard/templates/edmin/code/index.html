@@ -134,7 +134,7 @@
                                       19</b> </h3>
               </div>
               <div class="module-option clearfix">
-                <div class="pull-left">
+                <!-- <div class="pull-left">
                   Filter : &nbsp;
                   <div class="btn-group">
                     <button class="btn">All</button>
@@ -148,7 +148,7 @@
                       <li class="divider"></li>
                     </ul>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="module-body table">
 
@@ -472,8 +472,10 @@
         success: function(data) {
           var obj = JSON.parse(data)
           allNetworks = obj.networks
+          console.log(data)
+          var x = document.getElementById("vmNetworks")
+          x.innerHTML = ""
           for (item of obj.networks) {
-            var x = document.getElementById("vmNetworks")
             var opt = document.createElement("option")
             opt.text = item.name;
             opt.value = item.name;
