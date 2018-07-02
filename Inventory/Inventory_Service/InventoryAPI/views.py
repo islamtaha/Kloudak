@@ -61,8 +61,8 @@ def userlogin(request):
             if user:
                 login(request, user)
                 jwt_token = {'token': jwt.encode(userpermissions, "SECRET_KEY", algorithm='HS256').decode('utf-8')}
-                print(request.META.HTTP_REFERER)
-                res = redirect('http://localhost:5000/ui/dashboard/')
+                #res = redirect('http://localhost:5000/ui/dashboard/')
+                res = redirect('http://localhost:5000/kloudak/workspaces/')
                 res['token'] = jwt_token['token']
                 return res
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
