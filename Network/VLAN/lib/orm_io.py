@@ -87,6 +87,9 @@ class dbIO(object):
                 break
         return o
 
+    def __del__(self):
+        self.session.close()
+
 
 
 
@@ -175,3 +178,6 @@ class dbTransaction:
 
     def commit(self):
         self.session.commit()
+
+    def __del__(self):
+        self.session.close()

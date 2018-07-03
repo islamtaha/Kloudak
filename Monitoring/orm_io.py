@@ -90,3 +90,6 @@ class dbIO(object):
                 self.session.commit()
                 break
         return o
+
+    def __del__(self):
+        self.session.close()
