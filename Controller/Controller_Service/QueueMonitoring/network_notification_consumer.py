@@ -105,7 +105,7 @@ def fetchTask(task_id, task_type, retries, failed=False, body=''):
         return iTask
 
 
-def handler(ch, method, properties, nbody):
+def handler(ch, ch_method, properties, nbody):
     body = json.loads(nbody.decode('utf-8'))
     print(body)
     task_type = body['type']
@@ -123,13 +123,14 @@ def handler(ch, method, properties, nbody):
     if t:
         token = {'username': 'maged', 'email': 'magedmotawea@gmail.com', 'key': 'secret'}
         sendNotification(notificationIP, 3000, body['owner'], token, t.as_dict())
+    ch.basic_ack(delivery_tag=ch_method.delivery_tag)
 
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
     channel = connection.channel()
     channel.queue_declare('network_notification')
-    channel.basic_consume(handler, queue='network_notification', no_ack=True)
+    channel.basic_consume(handler, queue='network_notification', no_ack=False)
     channel.start_consuming()
 
 if __name__ == '__main__':

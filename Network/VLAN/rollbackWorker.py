@@ -7,6 +7,7 @@ def handler(ch, method, properties, body):
     data = json.loads(body.decode('utf-8'))
     name = data['name']
     owner = data['owner']
+    
 
 
 

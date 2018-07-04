@@ -26,13 +26,14 @@ def handler_mapper(t):
     return handler_dict[t]
 
 
-def consumer(ch, method, properties, body):
+def consumer(ch, ch_method, properties, body):
     data = json.loads(body.decode('utf-8'))
     t = data['type']
     handler = handler_mapper(t)
     handler.set_config(conf_dict['database'], conf_dict['broker'])
     method = method_mapper(data['method'], handler)
     method(data)
+    ch.basic_ack(delivery_tag=ch_method.delivery_tag)
 
 
 def main():
@@ -40,7 +41,7 @@ def main():
     channel = connection.channel()
     channel.queue_declare(queue='network')
     print("handling connection")
-    channel.basic_consume(consumer, queue='network', no_ack=True)
+    channel.basic_consume(consumer, queue='network', no_ack=False)
     channel.start_consuming()
 
 
