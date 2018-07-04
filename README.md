@@ -1,2 +1,2 @@
 # Kloudak
-Very Simple (Not Finished Yet) Public Cloud Platform
+Very Simple Cloud Automation Platform
